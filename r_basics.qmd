@@ -1,0 +1,1019 @@
+---
+title: <font size="7"><b>Basic elements of the R language</b></font>
+---
+
+```{r,echo=FALSE,message=FALSE}
+
+options("digits"=5)
+options("digits.secs"=3)
+
+# options to customize chunk outputs
+knitr::opts_chunk$set(
+  message = FALSE
+ )
+
+```
+
+::: {.alert .alert-info}
+# Objective of the manual {.unnumbered .unlisted}
+
+-   To understand the basic blocks used in R programming
+
+-   To become familiar with the main sources of standardized documentation in R
+:::
+
+ 
+
+# What is R?
+
+-   A free [Domain-Specific Language (DSL)](https://en.wikipedia.org/wiki/Domain-specific_language) for statistics and data analysis
+-   A collection of more than 22823 packages (as of oct-2025)
+-   A large and active community in industry and academia
+-   A way to talk “directly” to your computer.
+
+Historically:
+
+-   Based on the S programming language
+-   About 20 years old (lineage dates back to 1975 - almost 40 years ago)
+
+![](images/Rinterf.jpeg){width="100%"}
+
+ 
+
+# Rstudio
+
+Integrated development environment (IDE) for R. Includes:
+
+-   A console
+-   Syntax highlighting editor supporting direct code execution
+-   Tools for tracing, history, debugging, and workspace management
+
+![](images/Rstudio.jpeg){width="100%"}
+
+##  
+
+```{r paleta}
+#| eval: false
+#| echo: false
+
+ [1] "#0B040566" "#28192F66" "#3B2F5E66" "#40498E66"
+ [5] "#366A9F66" "#348AA666" "#38AAAC66" "#54C9AD66"
+ [9] "#A0DFB966" "#DEF5E566"
+
+```
+
+# Elements of the R language
+
+In R everything that exists is an object and objects can be roughly classified into **objects that contain data** and objects that perform tasks, better known as **functions**:
+
+```{mermaid}
+
+flowchart LR
+    classDef largeText font-size:18px, padding:15px;
+
+    R(Objects in R) --> D(Data objects)
+    D --> D1(1 dimension)
+    D --> D2(2 dimensions)
+    D --> DN(N dimensions)
+    R --> F(Functions)
+    
+    D1 --> V(Vector)
+    D1 --> L(List)
+    D2 --> M(Matrix)
+    D2 --> DF(Data Frame)
+    DN --> AR(Array)
+
+    F --> BF(Integraded functions)
+    BF --> BA(Basic functions)
+    BF --> OP(Operators)
+    F --> PF(Packages)
+    F --> UF(User defined functions)
+
+    class R,D,D1,D2,F largeText;
+
+    style R fill:#28192F66, stroke:#000, stroke-width:2px, color:#FFF, width:140px
+    style D fill:#40498E66, stroke:#000, stroke-width:2px, color:#FFF, width:180px
+    style D1 fill:#348AA666, stroke:#000, stroke-width:2px, color:#FFF, width:140px
+    style D2 fill:#348AA666, stroke:#000, stroke-width:2px, color:#FFF, width:140px
+    style DN fill:#348AA666, stroke:#000, stroke-width:2px, color:#FFF, width:140px
+    style F fill:#357BA266, stroke:#000, stroke-width:2px, color:#FFF, width:120px
+    style DF fill:#49C1AD66, stroke:#000, stroke-width:2px, color:#000
+    style AR fill:#49C1AD66, stroke:#000, stroke-width:2px, color:#000
+    style V fill:#49C1AD66, stroke:#000, stroke-width:2px, color:#000
+    style M fill:#49C1AD66, stroke:#000, stroke-width:2px, color:#000
+    style L fill:#49C1AD66, stroke:#000, stroke-width:2px, color:#000
+    style BF fill:#A0DFB966, stroke:#000, stroke-width:2px, color:#000
+    style BA fill:#DEF5E566, stroke:#000, stroke-width:2px, color:#000
+    style OP fill:#DEF5E566, stroke:#000, stroke-width:2px, color:#000    
+    style PF fill:#A0DFB966, stroke:#000, stroke-width:2px, color:#000000
+    style UF fill:#A0DFB966, stroke:#000, stroke-width:2px, color:#000
+
+
+```
+
+To feel comfortable programming in R it is necessary to know at all times what kind of objects we are working with. The `class()` and `str()` functions allow us to evaluate the structure of objects. We will be using them repeatedly in this tutorial.
+
+## Objects containing data
+
+The basic data structure in R is the vector. With this all other object classes are built. To understand classes it is useful to think about the number of dimensions (1, 2 or more) and types of data they can contain: homogeneous (a single element type) or heterogeneous (or multiple element types).
+
+```{mermaid}
+
+flowchart LR
+    classDef largeText font-size:18px, padding:15px;
+
+    D(Data objects) --> D1(1 dimension)
+    D --> D2(2 dimensions)
+    D1 --> V(Vector)
+    D1 --> L(List)
+    D2 --> M(Matrix)
+    D2 -->  DF(Data Frame)
+
+    style D fill:#40498E66, stroke:#000, stroke-width:2px, color:#FFF, width:180px
+    style D1 fill:#348AA666, stroke:#000, stroke-width:2px, color:#FFF, width:140px
+    style D2 fill:#348AA666, stroke:#000, stroke-width:2px, color:#FFF, width:140px
+    style DF fill:#49C1AD66, stroke:#000, stroke-width:2px, color:#000
+    style V fill:#49C1AD66, stroke:#000, stroke-width:2px, color:#000
+    style M fill:#49C1AD66, stroke:#000, stroke-width:2px, color:#000
+    style L fill:#49C1AD66, stroke:#000, stroke-width:2px, color:#000
+
+
+```
+
+```{r, echo=FALSE}
+d <- data.frame(
+ 	c("Atomic vector", "List"),
+	c("Matrix", "Data frame"),
+c("Array", ""))
+
+
+d <- t(d)
+
+colnames(d) <-c("Homogeneous",	"Heterogeneous")
+
+rownames(d) <-c("1d",	"2d", "nd")
+
+as.data.frame(d)
+
+```
+
+### 1 dimension objects
+
+There are two basic types of vectors: atomic vectors and lists.
+
+They have three common properties:
+
+-   Type, `typeof()` (class/mode).
+-   Length, `length()` (number of elements)
+-   Attributes, `attributes()` (metadata)
+
+They differ in the types of their elements: all elements of an atomic vector must be of the same type, while the elements of a list can have different types.
+
+#### Atomic vectors
+
+Types of atomic vectors:
+
+-   Logical [(Boolean)](https://en.wikipedia.org/wiki/Boolean)
+-   Integer
+-   Numeric (double)
+-   Characters
+-   Factors
+
+Vectors are constructed with the `c()` function, they can be numeric:
+
+```{r}
+x <- 1
+x1 <- c(1)
+
+all.equal(x, x1)
+
+class(x)
+```
+
+Characters:
+
+```{r}
+y <- "something"
+
+class(y)
+```
+
+Logical:
+
+```{r}
+z <- TRUE
+
+class(z)
+```
+
+Or factor:
+
+```{r}
+q <- factor(1)
+
+class(q)
+
+```
+
+Therefore, the individual numbers or strings are actually vectors of length one:
+
+```{r}
+
+class(1)
+
+class("a")
+```
+
+Vectors can only contain elements of the same type. Different types of elements will be forced to the most flexible type:
+
+```{r}
+
+x <- c(1, 2, "a")
+
+x
+
+class(x)
+
+```
+
+Missing values are specified with `NA`, which is a logical vector of length 1. `NA` will always be interpreted to the correct type if used inside `c()`:
+
+```{r}
+
+v <- c(10, 11, NA)
+
+class(v)
+
+v <- c("a", "b", NA)
+
+class(v)
+
+```
+
+<br>
+
+::: {.alert .alert-warning}
+#### Factors
+
+Vectors with factors are very similar to character vectors. However, a factor can only contain predefined values, known as levels. Attributes are used to define the levels of the factor.
+
+Factors are built on integer vectors using two attributes:
+
+-   "factor" class: makes them behave differently from normal character vectors.
+-   levels: defines the set of allowed values
+
+```{r}
+
+x <- factor(c("a", "b", "b", "a"))
+x
+
+levels(x)
+
+
+str(x)
+
+```
+
+The factors look like character vectors, but are actually integers:
+
+```{r}
+
+x <- factor(c("a", "b", "b", "a"))
+
+c(x)
+```
+:::
+
+#### Lists
+
+Can contain objects of different classes and sizes. Lists are constructed with list():
+
+```{r}
+
+l <- list("a", 1, FALSE)
+
+l
+
+class(l)
+
+str(l)
+
+```
+
+In fact, they can be seen as drawers where you can put any other type of object:
+
+```{r}
+
+
+l <- list(c("a", "b"), 
+          c(1, 2, 3, 4), 
+          c(FALSE, TRUE, FALSE))
+
+l
+
+str(l)
+
+```
+
+### 2-dimensional objects
+
+#### Matrices
+
+All elements are of the same type:
+
+```{r}
+m <- matrix(c("a", "b", "c", "d", "e", "f"), nrow = 2)
+
+dim(m)
+
+m
+
+class(m)
+
+
+m <- matrix(c("a", "b", "c", "d", "e", 1), nrow = 2)
+m
+
+
+```
+
+#### Data Frames
+
+Special case of lists. It can contain elements of different types:
+
+```{r}
+
+m <-
+  data.frame(
+    ID = c("a", "b", "c", "d", "e"),
+    size = c(1, 2, 3, 4, 5),
+    observed = c(FALSE, TRUE, FALSE, FALSE, FALSE)
+  )
+
+dim(m)
+
+m
+
+class(m)
+
+is.data.frame(m)
+
+is.list(m)
+
+str(m)
+
+```
+
+But the vectors must have the same length:
+
+```{r, error = TRUE}
+
+m <-
+  data.frame(
+    ID = c("a", "b", "c", "d", "e"),
+    size = c(1, 2, 3, 4, 5, 6),
+    observed = c(FALSE, TRUE, FALSE, FALSE, FALSE)
+  )
+
+```
+
+ 
+
+::: {.alert .alert-info}
+## Exercise 1
+
+-   Create a numeric vector with 8 elements containing positive and negative numbers.
+
+-   Create a character vector with the names of the provinces of Costa Rica.
+
+-   Add to the above point vector an `NA`
+
+-   Create a numeric matrix with 3 columns and 3 rows
+
+-   Create a character matrix with 4 columns and 3 rows
+
+-   What class of object is 'iris' and what are its dimensions (hint: `iris` is an object available by default in your environment)?
+
+-   Create a data frame with a numeric column, a character column and a factor column.
+:::
+
+ 
+
+## Functions: objects that perform tasks
+
+All functions are created with the `function()` function and follow the same structure:
+
+![](images/function.png){width="100%"}
+
+<font size="2">\* Modified from <i>Grolemund 2014</i></font>  
+
+### Integrated functions
+
+#### Basic functions
+
+R comes with many functions that you can use to do sophisticated tasks:
+
+```{r}
+# built in functions
+bi <- builtins(internal = FALSE)
+
+length(bi)
+
+```
+
+Some functions come by default with R basic. New functions can be loaded as part of additional packages or even created by the user.
+
+```{mermaid}
+
+flowchart LR
+    classDef largeText font-size:18px, padding:15px;
+
+    F(Functions) --> BF(Integraded functions)
+    BF --> OP(Operators)
+    BF --> BA(Basic functions)
+    F --> PF(Packages)
+    F --> UF(User defined functions)
+
+    class R,D,D1,D2,F largeText;
+
+    style F fill:#357BA266, stroke:#000, stroke-width:2px, color:#FFF, width:120px
+    style BF fill:#A0DFB966, stroke:#000, stroke-width:2px, color:#000
+    style BA fill:#DEF5E566, stroke:#000, stroke-width:2px, color:#000
+    style OP fill:#DEF5E566, stroke:#000, stroke-width:2px, color:#000    
+    style PF fill:#A0DFB966, stroke:#000, stroke-width:2px, color:#000000
+    style UF fill:#A0DFB966, stroke:#000, stroke-width:2px, color:#000
+
+
+```
+
+#### Operators
+
+Operators are functions:
+
+```{r}
+
+1 + 1
+
+
+'+'(1, 1)
+
+2 * 3
+
+
+'*'(2, 3)
+
+
+```
+
+##### Most used operators
+
+Arithmetic operators:
+
+```{r, echo=F}
+d <- data.frame(
+c("+" , "sum"),
+c("-", 	"subtraction"),
+c("*" ,	"multiplication"),
+c("/",	"division"),
+c("^ or **",	"exponential"))
+
+
+d <- t(d)
+
+colnames(d) <- c("Operator      ", "Description  ")
+
+knitr::kable(d, row.names = F, escape = FALSE) |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 18)
+
+```
+
+ 
+
+```{r}
+
+1 - 2
+
+1 + 2
+
+2 ^ 2
+
+2 ** 2
+
+2:3 %in% 2:4
+
+```
+
+Logical operators:
+
+```{r, echo=F, results='asis'}
+d <- matrix(
+c("<", "lower than", "<=", "lower than or equal to",">", "higher than", ">=",	"higher than or equal to", "==", "exactly the same", "!=",	"different than", "!x",	"Is not x", "x | y", "	x O y", "x & y", "x Y y","x %in% y", "correspondence"), ncol = 2, byrow = TRUE)
+
+
+
+d <- as.data.frame(d)
+
+names(d) <- c("Operator      ", "Description  ")
+
+knitr::kable(d, row.names = F,  booktabs = TRUE, escape = FALSE) 
+# |>
+ # kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 18, protect_latex = TRUE)
+
+```
+
+ 
+
+```{r}
+
+1 < 2 
+
+1 > 2 
+
+1 <= 2 
+
+1 == 2
+
+1 != 2
+
+1 > 2 
+
+5 %in% 1:6
+
+5 %in% 1:4
+```
+
+ 
+
+::: {.alert .alert-warning}
+### Vectorization
+
+Most functions are vectorized:
+
+```{r, eval=F}
+
+1:6 * 1:6
+
+```
+
+![](images/vectorize.png){width="100%"}
+
+<font size="2">\* Modified from <i>Grolemund & Wickham 2017</i></font>
+
+ 
+
+```{r, echo=F}
+
+1:6 * 1:6
+```
+
+```{r}
+
+1:6 - 1:6
+```
+
+R recycles vectors of unequal length:
+
+```{r, eval=F}
+
+1:6 * 1:5
+
+```
+
+![](images/recycle.png){width="100%"}
+
+<font size="2">\* Modified from <i>Grolemund & Wickham 2017</i></font>
+:::
+
+ 
+
+### Additional package functions
+
+These are functions that are included in additional packages that can be installed and loaded into R. To be used the package must be installed and loaded, e.g. to use the `corTest` function of the “psych” package we must first install. The packages are installed from the CRAN (Comprehensive R Archive Network) server with the `install.packages()` function:
+
+```{r}
+#| eval: false
+
+install.packages("psych")
+
+
+```
+
+... and load the package:
+
+```{r}
+
+library(psych)
+
+```
+
+Once 'psych' is installed and loaded, we can call the `corTest` function:
+
+```{r}
+
+corTest(iris$Sepal.Length, iris$Sepal.Width)
+
+```
+
+The use of external packages is the most useful feature of R since it allows to make use of an almost infinite number of specialized functions in different tasks as well as in very diverse fields of science and industry.
+
+We can explore the packages available for R at [the CRAN website](https://cran.r-project.org/) (click on the “packages” link).
+
+::: {.alert .alert-info}
+## Exercise 2
+
+-   Search for a package you are interested in on CRAN
+
+-   Install the package and load it
+
+-   Run the example code of one of its functions
+:::
+
+## Object manipulation
+
+## Extracting subsets using indexing
+
+Elements within objects can be called by indexing. To subset a vector simply call the position of the object using square brackets:
+
+```{r}
+
+x <- c("a", "b", "c", "d", "e", "a")
+
+x[1]
+
+x[2]
+
+x[2:3]
+
+x[c(1,3)]
+
+```
+
+ 
+
+The elements can be removed in the same way:
+
+```{r}
+
+
+x[-1]
+
+x[-c(1,3)]
+
+```
+
+ 
+
+The position of the indices can also be given by a conditional evaluation. For instance, this code selects the elements in  `x` in which the value is "a":
+
+```{r}
+
+x[x == "a"]
+
+```
+Notice that there are two steps in this process. First we create a logical vector in which `TRUE` means that the condition is met and `FALSE` that is not:
+
+```{r}
+
+is_a <- x == "a"
+
+is_a
+```
+
+.. and then we use it to subset the data frame:
+
+```{r}
+
+x[is_a]
+
+```
+Conditional evaluations can also be used for numeric vectors (e.g. '>', '==') and to subset bidimensional objects based on columns or rows.
+
+Matrices and data frames require 2 indices `[row, column]`:
+
+```{r}
+m <- matrix(c("a", "b", "c", "d", "e", "f"), nrow = 2)
+
+m[1, ]
+
+m[, 1]
+
+m[1, 1]
+
+m[-1, ]
+
+m[, -1]
+
+m[-1, -1]
+
+
+df <- data.frame(
+  provincia = c("San José", "Guanacaste", "Guanacaste"), 
+  canton = c("Montes de Oca", "Nicoya", "Liberia"), 
+	distrito = c("San Rafael", "Nosara", "Nacascolo")
+  )
+
+df
+
+df[1, ]
+
+df[, 1]
+
+df[1, 1]
+
+df[-1, ]
+
+df[, -1]
+
+df[-1, -1]
+```
+
+Data frames can also be subsetted using the name of the columns:
+```{r}
+df[,"provincia"]
+
+df[,c("provincia", "canton")]
+
+df$provincia
+```
+
+ 
+
+Lists require 1 index between double square brackets `[[index]]`:
+
+```{r}
+
+l <- list(c("a", "b"),
+          c(1, 2, 3),
+          c(FALSE, TRUE, FALSE, FALSE))
+
+l[[1]]
+
+l[[3]]
+
+```
+
+ 
+
+Elements within lists can also be subsets in the same code string:
+
+```{r}
+
+l[[1]][1:2]
+
+l[[3]][2]
+
+```
+
+ 
+
+## Explore objects
+
+The following basic R functions (default) can help us to explore the structure of objects:
+
+```{r, eval = TRUE}
+
+str(df)
+
+names(df)
+
+dim(df)
+
+nrow(df)
+
+ncol(df)
+
+head(df)
+
+tail(df)
+
+table(df$provincia)
+
+class(df)
+
+```
+
+```{r, eval = F}
+
+View(df)
+
+```
+
+ 
+
+::: {.alert .alert-info}
+## Exercise 3
+
+-   Use the example data `iris` to create a subset of data with only the observations of the species `setosa`.
+
+-   Now create a subset of data containing the observations of both `setosa` and `versicolor`.
+
+-   Also with `iris` create a subset of data with the observations for which `iris$Sepal.length` is greater than 6
+
+-   How many observations have a sepal length greater than 6?
+:::
+
+# Style matters
+
+<font size="2"><a href="https://google.github.io/styleguide/Rguide.xml">Based on google's R Style Guide</a></font>
+
+## File names
+
+File names must end in .R and, of course, be self-explanatory:
+
+-   Good: graph_posterior_probability.R
+-   Bad: graf.R
+
+## Object names
+
+Variables and functions:
+
+-   Lowercase
+-   Use an underscore
+-   In general, names for variables and verbs for functions.
+-   Keep names concise and meaningful (not always easy).
+-   Avoid using names of existing functions of variables
+
+```{r, eval=F}
+
+- GOOD: day_one: day_1, mean_weight(),
+  
+- BAD: dayone, day1, first_day.of.month
+```
+
+ 
+
+## Syntax
+
+### Spaces
+
+-   Use spaces around operators and for arguments within a function.
+-   Always put a space after a comma, and never before (as in normal English).
+-   Place a space before the left parenthesis, except in a function call.
+
+```{r, eval=F}
+
+  - GOOD: 
+          a <- rnorm(n = 10, sd = 10, mean = 1)
+          total <- sum(x[1, ])
+
+  - BAD: 
+         a<-rnorm(n=10,sd=10,mean=1) 
+         total <- sum(x[,1])  
+         
+```
+
+ 
+
+#### Brackets
+
+-   The opening key should never go on its own line.
+-   The closing brace must always be on its own line.
+-   You can omit braces when a block consists of only one statement
+
+```{r eval=F}
+
+  - GOOD:
+              if (is.null(ylim)) {
+              ylim <- c(0, 0.06)
+            }
+                      
+            if (is.null(ylim))
+              ylim <- c(0, 0.06)
+          
+  - BAD:
+            
+         if (is.null(ylim)) ylim <- c(0, 0.06)
+                    
+         if (is.null(ylim)) {ylim <- c(0, 0.06)} 
+
+         if (is.null(ylim)) {
+           ylim <- c(0, 0.06)
+           } 
+```
+
+ 
+
+#### Create objects
+
+-   Use \<-, instead of =
+
+```{r, eval = F}
+
+  - GOOD:
+         x <- 5 
+          
+  - BAD:
+         x = 5
+```
+
+ 
+
+#### Suggestions to add comments
+
+-   Comment your code
+-   Entire commented lines should begin with \# and a space.
+-   Short comments can be placed after the code preceded by two spaces, #, and then a space.
+
+```{r, eval=F}
+
+# Create histogram of frequency of campaigns by pct budget spent.
+hist(df$pct.spent,
+     breaks = "scott",  # method for choosing number of buckets
+     main   = "Histogram: individuals per unit of time",
+     xlab   = "Individual count",
+     ylab   = "Frequency")
+```
+
+ 
+
+------------------------------------------------------------------------
+
+ 
+
+# R Documentation
+
+Most R resources are very well documented. So **the first source of help you should turn to when writing R code is the R documentation itself**. All packages are documented in the same standard way. Familiarizing yourself with the format can simplify things a lot.
+
+## Package documentation
+
+![](images/packagepage.png){width="100%"}
+
+ 
+
+## Reference manuals
+
+Reference manuals are collections of documentation for all the functions of a package (only 1 per package):
+
+-   [dynaSpec manual](https://cloud.r-project.org/web/packages/dynaSpec/dynaSpec.pdf)
+
+-   [baRulho manual](https://cran.r-project.org/web/packages/baRulho/baRulho.pdf)  
+
+## Documentation of functions
+
+All functions (default or loaded packages) must have documentation that follows a standard format:
+
+```{r, eval=F}
+?mean
+
+help("mean")
+
+```
+
+![](images/documentation.png){width="100%"}
+
+This documentation can also be displayed in Rstudio by pressing `F1` when the cursor is on the function name.
+
+If you do not remember the function name try `apropos()`:
+
+```{r}
+apropos("mean")
+
+```
+
+ 
+
+## Vignettes (vignettes)
+
+Vignettes are illustrative documents or case studies detailing the use of a package (optional, can be several per package).
+
+Vignettes can be called directly from R:
+
+```{r}
+vgn <- browseVignettes() 
+```
+
+```{r, eval = F}
+vignette()
+```
+
+También deberían aparecer en la página del paquete en CRAN.
+
+::: {.alert .alert-info}
+## Exercise 4
+
+-   What does the `cut()` function do?
+
+-   What is the `breaks` argument used for in `cut()`?
+
+-   Run the first 4 lines of code from the examples provided in the `cut()` documentation.
+
+-   How many bullets does the warbleR package have?
+:::
+
+------------------------------------------------------------------------
+
+# References {.unnumbered .unlisted}
+
+-   [Advanced R, H Wickham](http://adv-r.had.co.nz/Data-structures.html)
+-   [Google's R Style Guide](https://google.github.io/styleguide/Rguide.xml)\
+-   Hands-On Programming with R (Grolemund, 2014)
+
+------------------------------------------------------------------------
+
+## Session info {.unnumbered .unlisted}
+
+```{r session info, echo=F}
+
+sessionInfo()
+
+```

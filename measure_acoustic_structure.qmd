@@ -1,0 +1,928 @@
+---
+title: <font size="7"><b>Measures of acoustic structure</b></font>
+editor_options: 
+  chunk_output_type: console
+---
+
+ 
+
+
+```{r clean session, echo=F, warning=FALSE, message=FALSE}
+
+knitr::opts_chunk$set(dpi = 200)
+
+library(warbleR)
+library(kableExtra)
+library(viridis)
+library(ggplot2)
+library(ggheatmap)
+library(PhenotypeSpace)
+```
+
+
+::: {.alert .alert-info}
+## **Objetives** {.unnumbered .unlisted}
+
+-   Learn the different methods available to quantify acoustic structure
+
+-   Understand their pros and cons
+
+-   Learn how to apply them in R
+:::
+
+ 
+
+Acoustic signals are multidimensional traits; they vary complexly in time, frequency, amplitude and combinations of these dimensions. Generally, in biology we want to measure aspects of acoustic signals that vary in response to the factors predicted by our hypotheses. In some cases we even lack predictions for specific acoustic features and we need to evaluate the relative similarity between the variants of a signal in a population. These analyses require a diversity of tools for quantifying the multiple dimensions in which we can decompose the signals.
+
+The **warbleR** package is designed to quantify the acoustic structure of a population of signals using 4 main methods of analysis. 2 of them are absolute measures of the structure:
+
+-   Spectrographic features
+-   Statistical descriptors of cepstral coefficients
+
+The other 2 provide a relative similarity value between signals:
+
+-   Spectrographic cross-correlation
+-   Dynamic time warping
+
+
+::: {.alert .alert-warning}
+## Example data
+
+We will use the example data `lbh_selec_table` that comes with the package. This data frame contains the selection table of 11 long-billed hermit (*Phaethornis longirostris*) songs. The selection table is a data frame with the following columns:
+
+```{r}
+#| eval=FALSE
+
+library(warbleR)
+library(viridis)
+library(ggplot2)
+library(ggheatmap)
+library(PhenotypeSpace)
+
+warbleR_options(wav.path = "./examples/", flim = c(1, 10), wl = 200, ovlp = 90, pb = FALSE)
+
+data(lbh_selec_table)
+
+lbh_selec_table
+```
+
+
+```{r, echo=FALSE}
+
+warbleR_options(wav.path = "./examples/", flim = c(1, 10), wl = 200, ovlp = 90, pb = FALSE)
+
+data(lbh_selec_table)
+
+kbl <- kable(lbh_selec_table, align = "c", row.names = F,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+```
+
+This is a catalog (made with the `catalog()` function) with the spectrograms of all sounds referenced in the selection table (*the function saves the image file(s) in the folder in which the sound files are found*):
+
+```{r}
+#| eval=FALSE
+
+# make a color pallete for tagging spectrograms
+tag_pal <- function(x)
+  mako(x,
+       alpha = 0.6,
+       begin = 0.1,
+       end = 0.9)
+
+# plot all annotation spectrograms in a catalog
+catalog(
+  lbh_selec_table,
+  flim = c(1.5, 10),
+  wl = 200,
+  ovlp = 90,
+  nrow = 4,
+  ncol = 3,
+  width = 12,
+  height = 8,
+  pb = FALSE,
+  same.time.scale = TRUE,
+  mar = 0.02,
+  pal = mako,
+  collevels = seq(-120, 0, 1),
+  group.tag = "sound.files",
+  tag.pal = list(tag_pal),
+  spec.mar = 0.6,
+  box = FALSE,
+  res = 200
+)
+
+
+```
+
+
+```{r}
+#| echo: false
+#| out.width: "100%"
+
+knitr::include_graphics("./images/Catalog_p1.jpeg")
+
+```
+
+  It is clear that each sound file contains a different variant of the song. We will use these data to illustrate the different methods of acoustic structure analysis available in **warbleR**.
+
+:::
+
+## Spectrographic features
+
+The `spectro_analysis()` function measures the following spectrographic features related to amplitude distributions in time and frequency, descriptors of the fundamental and dominant frequency contours and descriptors of harmonic content:
+
+ 
+
+::: {.alert .alert-success}
+#### Time and frequency (measured on the spectrogram)
+
+-   duration: signal length (in s)
+
+-   meanfreq: medium frequency. Weighted average frequency by amplitude (in kHz)
+
+-   sd: standard deviation of the amplitude weighted frequency
+
+ 
+
+#### Energy distribution across frequencies (measured on the power spetrum)
+
+-   freq.median: medium frequency. The frequency at which the signal is divided into two frequency intervals of equal energy (in kHz)
+
+-   freq.Q25: first frequency quartile. The frequency at which the signal is divided into two frequency ranges of 25% and 75% energy respectively (in kHz)
+
+-   freq.Q75: third frequency quartile. The frequency at which the signal is divided into two frequency ranges of 75% and 25% energy respectively (in kHz)
+
+-   freq.IQR: interquartile frequency range. Frequency range between 'freq.Q25' and 'freq.Q75' (in kHz)
+
+-   sp.ent: spectral entropy. Frequency spectrum energy distribution. Pure tone \~ 0; loud \~ 1
+
+-   peakf: peak frequency. Frequency with the highest energy. This feature can take a considerable amount of time to measure. Only generated if `fast = FALSE`. It provides a more accurate measurement of the peak frequency than `meanpeakf()`, but can be more easily affected by background noise
+
+-   meanpeakf: mean peak frequency. Frequency with the highest energy of the medium frequency spectrum (see `meanspec()`). Typically more consistent than `peakf()`
+
+ 
+
+#### Energy distribution across time (measured on the amplitude envelope)
+
+-   time.median: average time. The time at which the signal is divided into two time intervals of equal energy (in s)
+
+-   time.Q25: first quartile. The time in which the signal is divided into two time intervals of 25% and 75% energy respectively (in s)
+
+-   time Q75: third quartile. The time in which the signal is divided into two time intervals of 75% and 25% energy respectively (in s)
+
+-   time.IQR: interquartile time range. Time range between 'time.Q25' and 'time.Q75' (in s)
+
+-   skew (skewness): Asymmetry of the amplitude distribution
+
+-   kurt (kurtosis): measure of "peakedness" of the spectrum
+
+-   time.ent: temporary entropy. Energy distribution in the time envelope. Pure tone \~ 0; loud \~ 1
+
+-   entropy: Product of the spectral and temporal entropy: `sp.ent * time.ent`
+
+-   sfm: spectral flatness. Similar to sp.ent (pure tone \~ 0; loud \~ 1)
+
+ 
+
+#### Fundamental frequency contour descriptors (measured on the spectrogram)
+
+-   meanfun: average of the fundamental frequency measured through the signal
+
+-   minfun: minimum fundamental frequency measured through the signal
+
+-   maxfun: maximum fundamental frequency measured through the signal
+
+ 
+
+#### Dominant frequency contour descriptors (measured on the spectrogram)
+
+-   meandom: average of the dominant frequency measured through the signal
+
+-   mindom: minimum dominant frequency measured through the signal
+
+-   maxdom: maximum of the dominant frequency measured through the signal
+
+-   dfrange: dominant frequency range measured through the signal
+
+-   modindx: modulation index. Calculated as the cumulative absolute difference between adjacent measurements of dominant frequencies divided by the dominant frequency range. 1 means that the signals are not modulated
+
+-   startdom: measurement of dominant frequency at the beginning of the signal
+
+-   enddom: dominant frequency measurement at the end of the signal
+
+-   dfslope: pending change in the dominant frequency over time (`(enddom-startdom)/duration`). The units are kHz/s
+
+ 
+
+#### Harmonic content descriptors (measured on the spectrogram)
+
+-   hn_freq: average frequency of the upper 'n' harmonics (kHz) The number of harmonics is defined with the argument 'nharmonics'
+
+-   hn_width: average bandwidth of the upper 'n' harmonics (kHz) (see analysis). The number of harmonics is defined with the argument 'nharmonics'
+
+-   harmonics: the amount of energy in higher harmonics. The number of harmonics is defined with the argument 'nharmonics'
+
+-   HNR: relationship between harmonics and noise (dB). A measure of harmonic content
+:::
+
+ 
+
+We can easily measure them as follows:
+
+```{r, eval= FALSE, echo=TRUE, warning=FALSE, message=FALSE}
+
+# load examples
+data("lbh_selec_table")
+
+sp <- spectro_analysis(lbh_selec_table)
+
+sp
+
+```
+
+```{r, echo=FALSE}
+
+sp <- spectro_analysis(lbh_selec_table)
+
+kbl <- kable(sp, align = "c", row.names = F,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+```
+
+We can reduce the dimensionality using Principal component analysis (PCA):
+```{r}
+#| eval: false
+
+# run principal components
+pca <- prcomp(sp[, -c(1, 2)], scale = TRUE)
+
+# extract first 2 PCs
+sp_pcs <- data.frame(sp[, 1:2], pca$x[, 1:2])
+
+sp_pcs
+```
+```{r}
+#| echo: false
+
+# run principal components
+pca <- prcomp(sp[, -c(1, 2)], scale = TRUE)
+
+# extract first 2 PCs
+sp_pcs <- data.frame(sp[, 1:2], pca$x[, 1:2])
+
+kbl <- kable(sp_pcs, align = "c", row.names = F,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+```
+
+The acoustic space described by this data can be easily visualized with a scatterplot: 
+
+
+```{r}
+ggplot(sp_pcs,
+       aes(
+         x = PC1,
+         y = PC2,
+         color = sound.files,
+         shape =  sound.files
+       )) +
+  geom_point(size = 5) +
+  scale_color_viridis_d(option = "G",
+                        end = 0.9,
+                        direction = -1) +
+  theme_classic() +
+  labs(x = "PC1", y = "PC2") +
+  theme(legend.position = "right")
+
+```
+
+
+
+::: {.alert .alert-info}
+<font size="5">Exercise</font>
+
+
+-   The features related to harmonic content were not calculated. How can we do that?
+
+-   How does measuring harmonic content affect performance?
+
+-   What does the argument 'threshold' do?
+:::
+
+ 
+
+## Statistical descriptors of cepstral coefficients
+
+These coefficients were designed to decompose the sounds in a similar way than the human auditory system in order to facilitate speech recognition. The central idea is to compress the acoustic data maintaining only relevant information for the detection of phonetic differences. The principle refers to human hearing using the Mel logarithmic scale whose definition is based on how the human ear perceives frequency and loudness (Sueur 2018). Cepstral coefficients are literally defined as "the result of a cosine transformation of the real logarithm of short-term energy spectra expressed on a Mel frequency scale".
+
+The descriptive statistics that are extracted from the cepstral coefficients are: minimum, maximum, average, median, asymmetry, kurtosis and variance. It also returns the mean and variance for the first and second derivatives of the coefficients. These features are commonly used in the processing and detection of acoustic signals (e.g. Salamon et al 2014). They have been widely used for human voice analysis and its use has extended to mammalian bioacoustics, although they also appear to be useful for quantifying the structure of acoustic signals in other groups.
+
+In **warbleR** we can calculate statistical descriptors of cepstral coefficients with the `mfcc_stats()` function:
+
+```{r, eval = FALSE}
+
+cc <- mfcc_stats(X = lbh_selec_table)
+
+cc
+
+```
+
+```{r, eval= TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+cc <- mfcc_stats(X = lbh_selec_table)
+
+kbl <- kable(cc, align = "c", row.names = F,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+```
+
+Similarly to the spectrographic features, we can reduce the dimensionality of the cepstral coefficients using PCA:
+
+```{r}
+#| eval: false
+
+# run principal components
+pca <- prcomp(cc[, -c(1, 2)], scale = TRUE)
+
+# extract first 2 PCs
+cc_pcs <- data.frame(cc[, 1:2], pca$x[, 1:2])
+
+cc_pcs
+```
+
+```{r}
+#| echo: false
+
+# run principal components
+pca <- prcomp(cc[, -c(1, 2)], scale = TRUE)
+
+# extract first 2 PCs
+cc_pcs <- data.frame(cc[, 1:2], pca$x[, 1:2])
+
+kbl <- kable(cc_pcs, align = "c", row.names = F,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+```
+
+Again, this simplified acoustic space can be easily visualized with a scatterplot: 
+
+```{r}
+ggplot(cc_pcs,
+       aes(
+         x = PC1,
+         y = PC2,
+         color = sound.files,
+         shape =  sound.files
+       )) +
+  geom_point(size = 5) +
+  scale_color_viridis_d(option = "G",
+                        end = 0.9,
+                        direction = -1) +
+  theme_classic() +
+  labs(x = "PC1", y = "PC2") +
+  theme(legend.position = "right")
+
+```
+
+## (Spectrographic) cross correlation
+
+This analysis correlates the amplitude values in the frequency and time space pairwise for all signals in a selection table. The correlation represents a measure of spectrographic similarity of the signals:
+
+```{r, eval = FALSE}
+
+xcor <- cross_correlation(X = lbh_selec_table)
+
+xcor
+```
+
+```{r, echo=FALSE}
+
+xcor <- cross_correlation(X = lbh_selec_table)
+
+kbl <- kable(xcor, align = "c", row.names = TRUE,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+```
+
+
+The similarity matrix returned by the function can be visualized as a heatmap:
+
+```{r}
+
+# present xcor as a heatmap using ggplot2
+ggheatmap::ggheatmap((xcor)) +
+  scale_fill_viridis_c(
+    option = "G",
+    direction = 1,
+    begin = 0.1,
+    end = 0.8
+  ) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+The acoustic space defined by the pairwise similarities can be projected into two axis using multidimensional scaling:
+
+```{r}
+#| eval: false
+
+# convert into distances
+xcor_dist <- 1 - xcor
+
+# multidimensional scaling
+mds <- cmdscale(xcor_dist, k = 2)
+
+# extract first 2 vectors
+xcor_mds <- data.frame(lbh_selec_table[, 1:2], mds = mds[, 1:2])
+
+# print
+xcor_mds
+```
+
+```{r}
+#| echo: false
+
+# convert into distances
+xcor_dist <- 1 - xcor
+
+# multidimensional scaling
+mds <- cmdscale(xcor_dist, k = 2)
+
+# extract first 2 vectors
+xcor_mds <- data.frame(lbh_selec_table[, 1:2], mds = mds[, 1:2])
+kbl <- kable(xcor_mds, align = "c", row.names = F,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+```
+
+Note that the correlations are converted into distance by subtracting them from 1. This simplified acoustic space can also be easily visualized with a scatterplot: 
+
+```{r}
+ggplot(xcor_mds,
+       aes(
+         x = mds.1,
+         y = mds.2,
+         color = sound.files,
+         shape =  sound.files
+       )) +
+  geom_point(size = 5) +
+  scale_color_viridis_d(option = "G",
+                        end = 0.9,
+                        direction = -1) +
+  theme_classic() +
+  labs(x = "MDS1", y = "MDS2") +
+  theme(legend.position = "right")
+
+```
+
+::: {.alert .alert-info}
+<font size="5">Exercise</font>
+
+- What does the argument `type` do and how does it affect the performance of the function?
+
+- What does the `pb` argument do?
+:::
+
+
+## Dynamic time warping
+
+In time series analysis, time dynamics distortion (DTW) is one of the algorithms to measure the similarity between two time sequences, which may vary in their 'speed'. The sequences are nonlinearly 'warped' in the temporal dimension to determine a measure of their similarity independent of certain nonlinear variations in the temporal dimension.
+
+<img src="images/dtw.jpg" alt="viewSpec" width="640"/>
+
+
+The `freq_DTW()` function extracts the dominant frequency values as a time series and then calculates the acoustic dissimilarity using dynamic time warping. The function uses the `approx()` function to interpolate values between the dominant frequency measurements:
+
+```{r measure, eval = FALSE}
+
+dtw_dist <- freq_DTW(lbh_selec_table)
+
+```
+
+```{r measure 2, echo=FALSE}
+
+dtw_dist <- freq_DTW(lbh_selec_table)
+
+kbl <- kable(dtw_dist, align = "c", row.names = TRUE,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+```
+
+
+The function returns a matrix with paired dissimilarity values.
+
+If `img = TRUE`, the function also produces image files with the spectrograms of the signals listed in the input data frame that shows the location of the dominant frequencies.
+
+```{r measure 3, eval = FALSE}
+
+freq_DTW(lbh_selec_table, img = TRUE, col = "red", pch = 21, line = FALSE)
+
+```
+
+ 
+
+<img src="images/Phae.long1.wav-1-dfDTW.jpeg" alt="dfdtw" width="480"/>
+
+Frequency contours can be calculated independently using the `freq_ts()` function. These contours can be adjusted manually with the `tailor_sels()` function.
+
+The DTW distance matrix returned by the function can also be visualized as a heatmap:
+
+```{r}
+
+# present xcor as a heatmap using ggplot2
+ggheatmap(dtw_dist) +
+  scale_fill_viridis_c(
+    option = "G",
+    direction = -1,
+    begin = 0.1,
+    end = 0.8
+  ) +
+  theme(axis.text.x = element_text(angle = 90))
+
+```
+
+Similar to cross-correlation, the acoustic space defined by the pairwise DTW distances can be projected into two axis using multidimensional scaling:
+
+```{r}
+#| eval: false
+
+# multidimensional scaling
+mds <- cmdscale(dtw_dist, k = 2)
+
+# extract first 2 vectors
+dtw_mds <- data.frame(lbh_selec_table[, 1:2], mds = mds[, 1:2])
+
+# print
+dtw_mds
+```
+
+```{r}
+#| echo: false
+
+# multidimensional scaling
+mds <- cmdscale(dtw_dist, k = 2)
+
+# extract first 2 vectors
+dtw_mds <- data.frame(cc[, 1:2], mds = mds[, 1:2])
+
+kbl <- kable(dtw_mds, align = "c", row.names = F,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+```
+
+And again, this simplified acoustic space can be easily visualized with a scatterplot: 
+
+```{r}
+ggplot(dtw_mds,
+       aes(
+         x = mds.1,
+         y = mds.2,
+         color = sound.files,
+         shape =  sound.files
+       )) +
+  geom_point(size = 5) +
+  scale_color_viridis_d(option = "G",
+                        end = 0.9,
+                        direction = -1) +
+  theme_classic() +
+  labs(x = "MDS1", y = "MDS2") +
+  theme(legend.position = "right")
+
+```
+
+
+::: {.alert .alert-info}
+<font size="5">Exercise</font>
+
+ 
+
+-   What do the `length.out` argument in`freq_DTW()`?
+
+-   Calculate spectrographic cross-correlation for the inquiry calls from these individuals: `c("206433", "279470", "279533", "279820")`. The extended selection table can be downloaded and read as follows:
+
+```{r, eval = FALSE}
+
+download.file(url = "https://ndownloader.figshare.com/files/21167052", 
+ destfile = "./examples/iniquiry_calls.RDS")
+
+iniquiry_calls <- readRDS("./examples/iniquiry_calls.RDS")
+```
+
+-   We can use a binary matrix to represent call membership. It has to be a pairwise matrix in which 0 denotes pairs of calls that belong to the same individual and 1 pairs that belong to different individuals. The function `binary_triangular_matrix` from the package *PhenotypeSpace* creates this type of matrix for representing call membership at the individual level:
+
+```{r, eval = FALSE}
+
+bi_mat <- binary_triangular_matrix(iniquiry_calls$indiv)
+
+```
+
+Compare dissimilarity from cross-correlation (1 - correlation matrix) with individual call membership matrix using Mantel test (you can use `vegan::mantel()`)
+
+ 
+
+-   Do the same test but this time using cepstral coefficient cross-correlation (hint: see argument "type")
+
+-   Do the same test using dynamic time warping distances
+:::
+
+ 
+
+## Additional measures
+
+### Signal-to-noise ratio
+
+`sig2noise()` measures this feature. The duration of the margin in which to measure the background noise must be provided (`mar` argument):
+
+```{r, eval = FALSE}
+
+snr <- sig2noise(X = lbh_selec_table, mar = 0.06)
+
+snr
+
+```
+
+```{r, eval= TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+snr <- sig2noise(X = lbh_selec_table, mar = 0.06)
+
+kbl <- kable(snr, align = "c", row.names = F,  format = "html")
+
+kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+
+```
+
+ 
+
+### Inflections
+
+Inflections in this case are defined as changes in the slope of a frequency contour. They can be used as a measure of frequency modulation. They can be calculated using the `inflections()` function on previously measured frequency contours:
+
+```{r, eval = FALSE}
+
+cntrs <- freq_ts(X = lbh_selec_table)
+
+inflcts <- inflections(cntrs)
+
+```
+
+```{r, eval= TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+cntrs <- freq_ts(X = lbh_selec_table)
+
+inflcts <- inflections(cntrs)
+
+
+kbl <- kable(inflcts, align = "c", row.names = F,  format = "html")
+
+kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+
+```
+
+ 
+
+### Calculates features at higher levels of organization
+
+Vocalizations can be organized above the basic signal units like in long repertoire songs or multi-syllable calls. We can calculate average or extreme values of acoustic features of the sub-units for these higher levels of organization using the function `song_analysis()`:
+
+```{r, eval = FALSE}
+
+# add a 'song' column
+lbh_selec_table$song <- rep(1:4, each = 3)[1:11]
+
+# measure default features
+song_analysis(X = lbh_selec_table, song_colm = "song", parallel = 1, pb = TRUE)
+```
+
+```{r, eval= TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+
+# add a 'song' column
+lbh_selec_table$song <- rep(1:4, each = 3)[1:11]
+
+# measure default features
+W <- song_analysis(X = lbh_selec_table, song_colm = "song", parallel = 1, pb = TRUE)
+
+kbl <- kable(W, align = "c", row.names = F,  format = "html")
+
+kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+```
+
+This can also be done on features extracted from other functions:
+
+```{r eval = FALSE}
+
+# measure acoustic features
+sp <- spectro_analysis(lbh_selec_table[1:8, ], bp = c(1, 11), 300, fast = TRUE)
+
+sp <- merge(sp, lbh_selec_table[1:8, ], by = c("sound.files", "selec"))
+
+# caculate song-level features for all numeric features
+song_analysis(X = sp, song_colm = "song", parallel = 1, pb = TRUE)
+
+
+```
+
+```{r, eval= TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+warbleR_options(wav.path = "./examples")
+
+# add a 'song' column
+lbh_selec_table$song <- rep(1:4, each = 3)[1:11]
+
+# measure acoustic features
+sp <- spectro_analysis(lbh_selec_table[1:8, ], bp = c(1, 11), 300, fast = TRUE)
+
+sp <- merge(sp, lbh_selec_table[1:8, ], by = c("sound.files", "selec"))
+
+# caculate song-level features for all numeric features
+W <- song_analysis(X = sp, song_colm = "song", parallel = 1, pb = TRUE)
+
+kbl <- kable(W, align = "c", row.names = F,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+
+```
+
+ 
+
+Calculate song-level features selecting features with 'mean_colm':
+
+```{r, eval = FALSE}
+
+# caculate song-level features selecting features with mean_colm
+song_analysis(X = sp, song_colm = "song",mean_colm = c("dfrange", "duration"), parallel = 1, pb = TRUE)
+
+```
+
+```{r, eval= TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+W <- song_analysis(X = sp, song_colm = "song",mean_colm = c("dfrange", "duration"), parallel = 1, pb = TRUE)
+
+kbl <- kable(W, align = "c", row.names = F,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+
+
+```
+
+ 
+
+Calculate song-level features for selecting features with 'mean_colm', 'max_colm' and 'min_colm' and weighted by duration:
+
+```{r, eval = FALSE}
+
+song_analysis(X = sp, weight = "duration", song_colm = "song",
+mean_colm =  c("dfrange", "duration"), min_colm =  "mindom", max_colm = "maxdom", 
+  parallel = 1, pb = TRUE)
+
+
+```
+
+```{r, eval= TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+W <- song_analysis(X = sp, weight = "duration", song_colm = "song",
+mean_colm =  c("dfrange", "duration"), min_colm =  "mindom", max_colm = "maxdom", 
+  parallel = 1, pb = TRUE)
+
+kbl <- kable(W, align = "c", row.names = F,  format = "html")
+
+kbl <- kable_styling(kbl, bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE, font_size = 11)
+
+scroll_box(kbl, width = "808px",
+box_css = "border: 1px solid #ddd; padding: 5px; ", extra_css = NULL)
+
+
+```
+
+ 
+
+ 
+
+::: {.alert .alert-info}
+<font size="5">Exercise</font>
+
+ 
+
+-   Spix's disc-winged bats (*Thyroptera tricolor*) its a Neotropical species that uses a specific call type to reply to social mates looking for their roosts. Those 'response' calls look like this:
+
+ 
+
+<img src="images/response_thyroptera2.png" alt="viewSpec" width="100%"/>
+
+ 
+
+An extended selection table with response calls can be read from github as follows:
+
+```{r, eval = FALSE, echo = FALSE}
+
+download.file(url = "https://github.com/maRce10/PRSTATS_BR_2025/raw/master/examples/response_calls.RDS", 
+ destfile = "./examples/response_calls.RDS")
+
+response_calls <- readRDS("./examples/response_calls.RDS")
+
+sp_resp <- spectro_analysis(response_calls)
+
+response_calls <- cbind(response_calls, sp_resp[, -c(1, 2)])
+
+
+sp_resp_by_call <- song_analysis(response_calls, song_colm = "call")
+
+```
+
+```{r, eval = FALSE}
+
+download.file(url = "https://github.com/maRce10/PRSTATS_BR_2025/raw/master/examples/response_calls.RDS", 
+ destfile = "./examples/response_calls.RDS")
+
+response_calls <- readRDS("./examples/response_calls.RDS")
+
+
+```
+
+ 
+
+-   Calculate spectrographic features (`spectro_analysis()`) for the Spix's disc-winged bat response calls.
+
+-   Summarize features by call (`song_analysis()`). To do that you should add the column 'start', 'end' and 'call' to the output of `spectro_analysis()`
+:::
+
+ 
+
+------------------------------------------------------------------------
+
+## References
+
+1.  Araya-Salas M, A Hernández-Pinsón N Rojas, G Chaverri. (2020). [Ontogeny of an interactive call-and-response system in Spix's disc-winged bats. Animal Behaviour.](https://marce10.github.io/uploads/m-araya-salas-2020.pdf)
+
+2.  Araya-Salas M, Smith-Vidaurre G (2017) [warbleR: An R package to streamline analysis of animal acoustic signals. Methods Ecol Evol 8:184--191.](https://marce10.github.io/uploads/araya-salas-2017-f.pdf)
+
+3.  Lyon, R. H., & Ordubadi, A. (1982). Use of cepstra in acoustical signal analysis. Journal of Mechanical Design, 104(2), 303-306.
+
+4.  Salamon, J., Jacoby, C., & Bello, J. P. (2014). A dataset and taxonomy for urban sound research. In Proceedings of the 22nd ACM international conference on Multimedi. 1041-1044.
+
+<!-- add packages used, system details and versions  -->
+
+------
+
+# Session information {.unnumbered .unlisted}
+
+<details>
+  <summary>Click to see</summary>
+```{r session info}
+#| echo: false
+
+# if devtools is installed use devtools::session_info()
+if (requireNamespace("devtools", quietly = TRUE)) {
+  devtools::session_info()
+} else {
+  sessionInfo()
+}
+
+```
+</details>
