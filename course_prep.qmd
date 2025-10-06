@@ -42,7 +42,9 @@ update.packages(ask = FALSE)
 
 7)  Also in Rstudio: Go back up to the "File" tab and select "New Project", then select the "BIACOUSTICS_R_2025" directory.
 
-8)  Now in the R console in Rstudio: Run the following code to install the latest developmental versions (from github) of warbleR, Rraven, PhenotypeSpace, ohun, baRulho and dynaSpec (remove the packages first if you have them installed already).
+8) Download [this folder](https://www.dropbox.com/scl/fo/5vs5t8ew5ciza0i0m08rj/AL-V_t_ehq1AqaGsK1WH42c?rlkey=0kuuqo5xmfsac0tfmnnyg37e3&st=emmh6sr9&dl=0) within the Rstudio project directory. Make sure is saved as a subfolder call "examples"
+
+9)  Now in the R console in Rstudio: Run the following code to install the latest developmental versions (from github) of warbleR, Rraven, PhenotypeSpace, ohun, baRulho and dynaSpec (remove the packages first if you have them installed already).
 
 ```{r}
 
@@ -76,9 +78,9 @@ load_packages(packages = c(
 
 *if you have any issue installing 'bioacoustics' take a look at this fix: <https://stackoverflow.com/questions/53092646/unable-to-install-warbler-package-using-mac-os>*
 
-9) warbleR depends heavily on the R package seewave. Seewave may require some extra steps to get installed. Take a look at seewave's website for further help: [http://rug.mnhn.fr/seewave](http://rug.mnhn.fr/seewave/) (and then go to "installation" and scroll down)
+10) warbleR depends heavily on the R package seewave. Seewave may require some extra steps to get installed. Take a look at seewave's website for further help: [http://rug.mnhn.fr/seewave](http://rug.mnhn.fr/seewave/) (and then go to "installation" and scroll down)
 
-10) Install Raven lite from [ttp://ravensoundsoftware.com/raven-pricing/](http://ravensoundsoftware.com/raven-pricing/)(scroll down to "Raven Lite 2.0" and click on "Order Free Raven Lite 2.0 License"). Ignore if you have any Raven version already installed.
+11) Install Raven lite from [ttp://ravensoundsoftware.com/raven-pricing/](http://ravensoundsoftware.com/raven-pricing/)(scroll down to "Raven Lite 2.0" and click on "Order Free Raven Lite 2.0 License"). Ignore if you have any Raven version already installed.
 
 
 ## Non-critical software (not needed for most of the course) {.unnumbered .unlisted}
