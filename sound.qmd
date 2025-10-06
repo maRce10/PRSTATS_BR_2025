@@ -821,11 +821,24 @@ export(tico, f=22050)
 
 ## Format '.wav'
 
-**tuneR** and **audio** have a function to write `.wav` files: `writeWave()` and `save.wave()` respectively. Within **seewave**, the `savewav()` function, which is based on `writeWave()`, can be used to save data in `.wav` format. By default, the object name will be used for the name of the `.wav` file:
+**tuneR** and **audio** have a function to write `.wav` files: `writeWave()` and `save.wave()` respectively. Here is an example using `writeWave()`:
+
+```{r}
+
+writeWave(
+  tico,
+  filename = "tico.wav",
+  extensible = FALSE)
+
+```
+
+Note the use of the argument `extensible = FALSE`. This is because some audio software have problems reading files saved in the extensible format, which is a format used for multichannel audio files.
+
+Within **seewave**, the `savewav()` function, which is based on `writeWave()`, can be used to save data in `.wav` format. By default, the object name will be used for the name of the `.wav` file:
 
 ```{r, eval = FALSE}
 
-savewav(tico)
+savewav(tico, filename = "tico_seewave.wav")
 
 ```
 
