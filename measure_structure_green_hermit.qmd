@@ -23,17 +23,17 @@ format:
 
 ## Download Xeno-Canto data
 
-The warbleR function [`query_xc()`](https://marce10.github.io/warbleR/reference/query_xc.html) queries for avian vocalization recordings in the open-access online repository [Xeno-Canto](https://xeno-canto.org). It can return recordings metadata or download the associated sound files.
+The suwo function [`query_xenocanto()`](https://marce10.github.io/warbleR/reference/query_xc.html) queries for animal vocalization recordings in the open-access online repository [Xeno-Canto](https://xeno-canto.org) ([check here which taxonomic groups are available](https://xeno-canto.org/explore/taxonomy)). The function returns recordings metadata which can be later used to download the associated sound files.
 
 Get recording metadata for green hermits (*Phaethornis guy*):
 
 ```{r, echo=FALSE,message=FALSE,  warning=FALSE}
-library(warbleR)
 library(suwo)
+library(knitr)
+library(warbleR)
 ```
 
 ```{r, message=FALSE,  warning=FALSE, eval = FALSE}
-
 library(suwo)
 library(warbleR)
 
