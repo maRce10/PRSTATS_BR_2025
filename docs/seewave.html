@@ -447,7 +447,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  orni,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">f =</span> <span class="dv">22050</span>,</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="dv">5</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ssmooth =</span> <span class="dv">40</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ssmooth =</span> <span class="dv">20</span>,</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">"l"</span>,</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">colval =</span> <span class="st">"#51c724"</span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -465,23 +465,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>$s
-[1] 6.013985e-02 5.918741e-02 5.134111e-02 4.535434e-05 5.728253e-02
-[6] 4.535434e-05 6.667088e-03 4.535434e-05 4.966300e-02
+ [1] 5.896064e-03 5.306457e-02 5.850709e-02 5.088757e-02 5.442520e-02
+ [6] 1.133858e-03 4.535434e-05 8.163781e-04 4.535434e-05 5.896064e-03
+[11] 4.889198e-02
 
 $p
- [1] 2.208756e-02 1.004599e-01 8.272631e-02 2.267717e-04 8.594647e-02
- [6] 4.535434e-05 8.132033e-02 4.988977e-04 4.535434e-05 6.068410e-02
+ [1] 2.235969e-02 5.442520e-04 1.010948e-01 8.340663e-02 8.671749e-02
+ [6] 1.814173e-04 4.535434e-05 4.535434e-05 4.535434e-05 8.186458e-02
+[11] 1.451339e-03 6.109229e-02
 
 $r
-[1] 0.6552769
+[1] 0.6371434
 
 $s.start
-[1] 0.02208756 0.18268727 0.32460099 0.37616887 0.46216069 0.51948857 0.60085425
-[8] 0.60802024 0.60811095
+ [1] 0.02235969 0.02880000 0.18295939 0.32487311 0.46247817 0.51708479
+ [7] 0.51826401 0.51835472 0.51921645 0.60112638 0.60847378
 
 $s.end
-[1] 0.08222741 0.24187468 0.37594210 0.37621422 0.51944322 0.51953393 0.60752134
-[8] 0.60806559 0.65777395
+ [1] 0.02825575 0.08186458 0.24146649 0.37576068 0.51690338 0.51821865
+ [7] 0.51830936 0.51917109 0.51926180 0.60702244 0.65736576
 
 $first
 [1] "pause"</code></pre>
@@ -512,7 +514,7 @@ $first
 <p><img src="images/env_sliding_window_scheme_ENG_v2_1024.gif" alt="Sliding window" width="100%"></p>
 <p>&nbsp;</p>
 </div>
-<p>The argument <code>ssmooth</code> allows you to apply a sliding window to the amplitude envelope before detecting the pulses. This can help to avoid detecting very small amplitude fluctuations as signals. For example, using a window of 40 samples:</p>
+<p>Smoothing the envelope can help to avoid detecting very small amplitude fluctuations as signals. For example, using a sliding window of 40 samples:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>

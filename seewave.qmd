@@ -201,7 +201,7 @@ tmr <- timer(
   orni,
   f = 22050,
   threshold = 5,
-  ssmooth = 40,
+  ssmooth = 20,
   bty = "l",
   colval = "#51c724"
 )
@@ -253,7 +253,7 @@ This animation shows how the amplitude envelope of the "tico" object is smoothed
  
 :::
 
-The argument `ssmooth` allows you to apply a sliding window to the amplitude envelope before detecting the pulses. This can help to avoid detecting very small amplitude fluctuations as signals. For example, using a window of 40 samples:
+Smoothing the envelope can help to avoid detecting very small amplitude fluctuations as signals. For example, using a sliding window of 40 samples:
 
 ```{r, eval = T, echo = T}
 
