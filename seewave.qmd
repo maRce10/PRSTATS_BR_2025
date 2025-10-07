@@ -192,44 +192,19 @@ movie.name =  paste0("env_sliding_window_scheme_ENG_v2_", wl, ".gif"), interval 
 
  
 
-::: {.alert .alert-success}
-<font size="3"><b>Sliding window for time series</b></font>
 
- 
-
-Sliding windows allow you to smooth out the contours of a time series by calculating an average value around the "neighborhood" of values for a given value. In the case of amplitude envelope the size of the "neighborhood" is given by the length of the window ("wl"). The larger the window length, the greater the smoothing of the curve:
-
- 
-
-<img src="images/env_sliding_window_ENG_v2.gif" alt="Sliding window"/>
-
- 
-
-This animation shows how the amplitude envelope of the "tico" object is smoothed with a 512-point window:
-
- 
-
-<img src="images/env_sliding_window_scheme_ENG_v2_512.gif" alt="Sliding window"/>
-
- 
-
-... or a 1024 point window:
-
- 
-
-<img src="images/env_sliding_window_scheme_ENG_v2_1024.gif" alt="Sliding window"/>
-
- 
-:::
-
- 
-
-We can use these amplitude "hills" to define segments in the "wave" object using the `timer()` function. The "ssmooth" argument allows us to use a sliding window:
+We can use these amplitude "hills" to define segments in the "wave" object using the `timer()` function. In fact, this is the most basic method for automatic detection of acoustic signals/events:
 
 ```{r, eval = T, echo = T}
 
-tmr <- timer(orni, f = 22050, threshold = 5, ssmooth = 40, 
-             bty = "l", colval = "#51c724")
+tmr <- timer(
+  orni,
+  f = 22050,
+  threshold = 5,
+  ssmooth = 40,
+  bty = "l",
+  colval = "#51c724"
+)
 
 tmr
 ```
@@ -245,6 +220,54 @@ The output is a list with the following elements:
 -   **end**: end of signals
 
  
+
+
+
+::: {.alert .alert-success}
+<font size="3"><b>Smoothing through a sliding window</b></font>
+
+ 
+The argument `ssmooth` allows you to apply a sliding window to the amplitude envelope before detecting the pulses. 
+Sliding windows allow you to smooth out the contours of a time series by calculating an average value around the "neighborhood" of values for a given value. In the case of amplitude envelope the size of the "neighborhood" is given by the length of the window ("wl"). The larger the window length, the greater the smoothing of the curve:
+
+ 
+
+<img src="images/env_sliding_window_ENG_v2.gif" alt="Sliding window" width="100%"/>
+
+ 
+
+This animation shows how the amplitude envelope of the "tico" object is smoothed with a 512-point window:
+
+ 
+
+<img src="images/env_sliding_window_scheme_ENG_v2_512.gif" alt="Sliding window" width="100%"/>
+
+ 
+
+... or a 1024 point window:
+
+ 
+
+<img src="images/env_sliding_window_scheme_ENG_v2_1024.gif" alt="Sliding window" width="100%"/>
+
+ 
+:::
+
+The argument `ssmooth` allows you to apply a sliding window to the amplitude envelope before detecting the pulses. This can help to avoid detecting very small amplitude fluctuations as signals. For example, using a window of 40 samples:
+
+```{r, eval = T, echo = T}
+
+tmr <- timer(orni, f = 22050, threshold = 5, ssmooth = 40, 
+             bty = "l", colval = "#51c724")
+
+tmr
+```
+
+We can check how many signals were detected like this:
+```{r}
+length(tmr)
+```
+
 
 ::: {.alert .alert-info}
 <font size="5">Exercise</font>
