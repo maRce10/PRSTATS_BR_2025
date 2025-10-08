@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-07">
+<meta name="dcterms.date" content="2025-10-08">
 
 <title>Bioacoustic Data Analysis Using R 2025 - Sound</title>
 <style>
@@ -268,17 +268,22 @@ window.Quarto = {
     <h2 id="toc-title">Contents</h2>
    
   <ul class="collapse">
-  <li><a href="#sound-in-r" id="toc-sound-in-r" class="nav-link active" data-scroll-target="#sound-in-r"><span class="header-section-number">1</span> Sound in R</a>
+  <li><a href="#sound-as-a-physical-phenomenon" id="toc-sound-as-a-physical-phenomenon" class="nav-link active" data-scroll-target="#sound-as-a-physical-phenomenon"><span class="header-section-number">1</span> Sound as a physical phenomenon</a></li>
+  <li><a href="#digitizing-sound" id="toc-digitizing-sound" class="nav-link" data-scroll-target="#digitizing-sound"><span class="header-section-number">2</span> Digitizing sound</a>
   <ul class="collapse">
-  <li><a href="#non-specific-classes" id="toc-non-specific-classes" class="nav-link" data-scroll-target="#non-specific-classes"><span class="header-section-number">1.1</span> Non-specific classes</a></li>
-  <li><a href="#dedicated-r-classes-for-sound" id="toc-dedicated-r-classes-for-sound" class="nav-link" data-scroll-target="#dedicated-r-classes-for-sound"><span class="header-section-number">1.2</span> Dedicated R classes for sound</a></li>
-  <li><a href="#class-sound-phontools" id="toc-class-sound-phontools" class="nav-link" data-scroll-target="#class-sound-phontools"><span class="header-section-number">1.3</span> Class <code>sound</code> (<strong>phonTools</strong>)</a></li>
-  <li><a href="#class-audiosample-audio" id="toc-class-audiosample-audio" class="nav-link" data-scroll-target="#class-audiosample-audio"><span class="header-section-number">1.4</span> Class <code>audioSample</code> (<strong>audio</strong>)</a></li>
-  <li><a href="#export-sounds-from-r" id="toc-export-sounds-from-r" class="nav-link" data-scroll-target="#export-sounds-from-r"><span class="header-section-number">1.5</span> Export sounds from R</a></li>
-  <li><a href="#format-.wav" id="toc-format-.wav" class="nav-link" data-scroll-target="#format-.wav"><span class="header-section-number">1.6</span> Format ‘.wav’</a></li>
-  <li><a href="#format-.flac" id="toc-format-.flac" class="nav-link" data-scroll-target="#format-.flac"><span class="header-section-number">1.7</span> Format ‘.flac’</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">1.8</span> References</a></li>
+  <li><a href="#sampling-frequency" id="toc-sampling-frequency" class="nav-link" data-scroll-target="#sampling-frequency"><span class="header-section-number">2.1</span> Sampling frequency</a></li>
+  <li><a href="#nyquist-frequency" id="toc-nyquist-frequency" class="nav-link" data-scroll-target="#nyquist-frequency"><span class="header-section-number">2.2</span> Nyquist frequency</a></li>
+  <li><a href="#quantization" id="toc-quantization" class="nav-link" data-scroll-target="#quantization"><span class="header-section-number">2.3</span> Quantization</a></li>
   </ul></li>
+  <li><a href="#sound-in-r" id="toc-sound-in-r" class="nav-link" data-scroll-target="#sound-in-r"><span class="header-section-number">2.4</span> Sound in R</a></li>
+  <li><a href="#non-specific-classes" id="toc-non-specific-classes" class="nav-link" data-scroll-target="#non-specific-classes"><span class="header-section-number">2.5</span> Non-specific classes</a></li>
+  <li><a href="#dedicated-r-classes-for-sound" id="toc-dedicated-r-classes-for-sound" class="nav-link" data-scroll-target="#dedicated-r-classes-for-sound"><span class="header-section-number">2.6</span> Dedicated R classes for sound</a></li>
+  <li><a href="#class-sound-phontools" id="toc-class-sound-phontools" class="nav-link" data-scroll-target="#class-sound-phontools"><span class="header-section-number">2.7</span> Class <code>sound</code> (<strong>phonTools</strong>)</a></li>
+  <li><a href="#class-audiosample-audio" id="toc-class-audiosample-audio" class="nav-link" data-scroll-target="#class-audiosample-audio"><span class="header-section-number">2.8</span> Class <code>audioSample</code> (<strong>audio</strong>)</a></li>
+  <li><a href="#export-sounds-from-r" id="toc-export-sounds-from-r" class="nav-link" data-scroll-target="#export-sounds-from-r"><span class="header-section-number">2.9</span> Export sounds from R</a></li>
+  <li><a href="#format-.wav" id="toc-format-.wav" class="nav-link" data-scroll-target="#format-.wav"><span class="header-section-number">2.10</span> Format ‘.wav’</a></li>
+  <li><a href="#format-.flac" id="toc-format-.flac" class="nav-link" data-scroll-target="#format-.flac"><span class="header-section-number">2.11</span> Format ‘.flac’</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">2.12</span> References</a></li>
   </ul>
 </nav>
 </nav>
@@ -302,7 +307,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 7, 2025</p>
+      <p class="date">October 8, 2025</p>
     </div>
   </div>
   
@@ -324,6 +329,8 @@ window.Quarto = {
 </section>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
+<section id="sound-as-a-physical-phenomenon" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Sound as a physical phenomenon</h1>
 <p>Sound waves are characterized by compression and expansion of the medium as sound energy moves through it. There is also back and forth motion of the particles making up the medium:</p>
 <p><img src="images/wave_white_bg.gif" alt="wave animation" width="700"></p>
 <p><font size="3"> taken from https://dosits.org</font></p>
@@ -347,11 +354,12 @@ window.Quarto = {
 </div>
 </div>
 <p>&nbsp;</p>
-<div class="alert alert-success">
-<p><font size="6"><b>Digitizing sound</b></font></p>
+</section>
+<section id="digitizing-sound" class="level1 alert alert-success" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Digitizing sound</h1>
 <p>&nbsp;</p>
-<section id="sampling-frequency" class="level2" data-number="0.1">
-<h2 data-number="0.1" class="anchored" data-anchor-id="sampling-frequency"><span class="header-section-number">0.1</span> Sampling frequency</h2>
+<section id="sampling-frequency" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sampling-frequency"><span class="header-section-number">2.1</span> Sampling frequency</h2>
 <p>Digitizing implies discretizing, which requires some sort of regular sampling. Sampling frequency refers to how many samples of the pressure level of the environment are taken per second. A 440 Hz sine wave recorded at 44100 Hz would have around 100 samples per cycle. This plot shows 2 cycles of a 440 Hz sine wave sampled (vertical dotted lines) at 4410 Hz (a 1/10 of the recording sampling rate):</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -363,8 +371,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="nyquist-frequency" class="level2" data-number="0.2">
-<h2 data-number="0.2" class="anchored" data-anchor-id="nyquist-frequency"><span class="header-section-number">0.2</span> Nyquist frequency</h2>
+<section id="nyquist-frequency" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="nyquist-frequency"><span class="header-section-number">2.2</span> Nyquist frequency</h2>
 <p>Sampling should be good enough so the regularity of the sine wave can be reconstructed from the sampled data. Low sampling frequencies of a high frequency sine wave might not be able to provide enough information. For instance, the same 440 Hz sine wave sampled at 22050 Hz looks like this:</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -388,8 +396,8 @@ window.Quarto = {
 </div>
 <p>&nbsp;</p>
 </section>
-<section id="quantization" class="level2" data-number="0.3">
-<h2 data-number="0.3" class="anchored" data-anchor-id="quantization"><span class="header-section-number">0.3</span> Quantization</h2>
+<section id="quantization" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="quantization"><span class="header-section-number">2.3</span> Quantization</h2>
 <p>Once we know at which point amplitude samples will be taken we just need to measure it. This process is called <strong>quantization</strong>. The range of amplitude values is discretized in a number of intervals equals to <code>2 ^ bits</code>. Hence, it involves some rounding of the actual amplitude values and some data loss. This is the same 440 Hz sine wave recorded at 44100 kHz quantized at 2 bits (2^2 = 4 intervals):</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -447,10 +455,10 @@ window.Quarto = {
 <p>&nbsp;</p>
 <p>At this point quantization involves very little information loss. 16 bits is probably the most common dynamic range used nowadays. As you can imagine, the high number of intervals (2^16 = 65536) allows for great precision in the quantization of amplitude.</p>
 </section>
-</div>
+</section>
 <p>&nbsp;</p>
-<section id="sound-in-r" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Sound in R</h1>
+<section id="sound-in-r" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sound-in-r"><span class="header-section-number">2.4</span> Sound in R</h2>
 <p>Sound waves can be represented by 3 kinds of R objects:</p>
 <ul>
 <li>Common classes (numerical vector, numerical matrix)</li>
@@ -458,10 +466,11 @@ window.Quarto = {
 <li>Specific sound classes (Wave, sound and audioSample)</li>
 </ul>
 <p>&nbsp;</p>
-<section id="non-specific-classes" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="non-specific-classes"><span class="header-section-number">1.1</span> Non-specific classes</h2>
-<section id="vectors" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="vectors"><span class="header-section-number">1.1.1</span> Vectors</h3>
+</section>
+<section id="non-specific-classes" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="non-specific-classes"><span class="header-section-number">2.5</span> Non-specific classes</h2>
+<section id="vectors" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="vectors"><span class="header-section-number">2.5.1</span> Vectors</h3>
 <p>Any numerical vector can be treated as a sound if a sampling frequency is provided. For example, a 440 Hz sinusoidal sound sampled at 8000 Hz for one second can be generated like this:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -501,8 +510,8 @@ window.Quarto = {
 </div>
 <p>&nbsp;</p>
 </section>
-<section id="matrices" class="level3" data-number="1.1.2">
-<h3 data-number="1.1.2" class="anchored" data-anchor-id="matrices"><span class="header-section-number">1.1.2</span> Matrices</h3>
+<section id="matrices" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="matrices"><span class="header-section-number">2.5.2</span> Matrices</h3>
 <p>You can read any single column matrix:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -568,8 +577,8 @@ window.Quarto = {
 </div>
 <p>&nbsp;</p>
 </section>
-<section id="time-series" class="level3" data-number="1.1.3">
-<h3 data-number="1.1.3" class="anchored" data-anchor-id="time-series"><span class="header-section-number">1.1.3</span> Time series</h3>
+<section id="time-series" class="level3" data-number="2.5.3">
+<h3 data-number="2.5.3" class="anchored" data-anchor-id="time-series"><span class="header-section-number">2.5.3</span> Time series</h3>
 <p>The class <code>ts</code> and related functions <code>ts()</code>, <code>as.ts()</code>, <code>is.ts()</code> can also be used to generate sound objects in R. Here the command to similarly generate a series of time is shown corresponding to a 440 Hz sinusoidal sound sampled at 8000 Hz for one second:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -592,7 +601,7 @@ window.Quarto = {
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(s4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> Time-Series [1:4001] from 0 to 0.5: -0.162 0.627 -0.797 -0.176 -0.515 ...</code></pre>
+<pre><code> Time-Series [1:4001] from 0 to 0.5: 0.0725 -0.4262 -0.7094 0.0865 -0.443 ...</code></pre>
 </div>
 </div>
 <p>&nbsp;</p>
@@ -654,8 +663,8 @@ window.Quarto = {
 </div>
 </section>
 </section>
-<section id="dedicated-r-classes-for-sound" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="dedicated-r-classes-for-sound"><span class="header-section-number">1.2</span> Dedicated R classes for sound</h2>
+<section id="dedicated-r-classes-for-sound" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="dedicated-r-classes-for-sound"><span class="header-section-number">2.6</span> Dedicated R classes for sound</h2>
 <p>There are 3 kinds of objects corresponding to the <code>wav</code> binary format or the<code>mp3</code> compressed format:</p>
 <ul>
 <li><code>Wave</code> class of the package <strong>tuneR</strong></li>
@@ -663,8 +672,8 @@ window.Quarto = {
 <li><code>AudioSample</code> class of the package <strong>audio</strong></li>
 </ul>
 <p>&nbsp;</p>
-<section id="wave-class-tuner" class="level3" data-number="1.2.1">
-<h3 data-number="1.2.1" class="anchored" data-anchor-id="wave-class-tuner"><span class="header-section-number">1.2.1</span> <code>Wave</code> class (<strong>tuneR</strong>)</h3>
+<section id="wave-class-tuner" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="wave-class-tuner"><span class="header-section-number">2.6.1</span> <code>Wave</code> class (<strong>tuneR</strong>)</h3>
 <p>The <code>Wave</code> class comes with the <strong>tuneR</strong> package. This S4 class includes different “slots” with the amplitude data (left or right channel), the sampling frequency (or frequency), the number of bits (8/16/24/32) and the type of sound (mono/stereo). High sampling rates (&gt; 44100 Hz) can be read on these types of objects.</p>
 <p>The function to import <code>.wav</code> files from the hard drive is <code>readWave</code>:</p>
 <div class="cell">
@@ -917,8 +926,8 @@ attr(,"package")
 <p>&nbsp;</p>
 </section>
 </section>
-<section id="class-sound-phontools" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="class-sound-phontools"><span class="header-section-number">1.3</span> Class <code>sound</code> (<strong>phonTools</strong>)</h2>
+<section id="class-sound-phontools" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="class-sound-phontools"><span class="header-section-number">2.7</span> Class <code>sound</code> (<strong>phonTools</strong>)</h2>
 <p>The <code>loadsound()</code> function of <em>phonTools</em> also imports ‘wave’ sound files into R, in this case as objects of class <code>sound</code>:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -956,8 +965,8 @@ attr(,"package")
 <p>This function only imports files with a dynamic range of 8 or 16 bits.</p>
 <p>&nbsp;</p>
 </section>
-<section id="class-audiosample-audio" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="class-audiosample-audio"><span class="header-section-number">1.4</span> Class <code>audioSample</code> (<strong>audio</strong>)</h2>
+<section id="class-audiosample-audio" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="class-audiosample-audio"><span class="header-section-number">2.8</span> Class <code>audioSample</code> (<strong>audio</strong>)</h2>
 <p>The <strong>audio</strong> package is another option to handle <code>.wav</code> files. The sound can be imported using the <code>load.wave()</code> function. The class of the resulting object is <code>audioSample</code> which is essentially a numerical vector (for mono) or a numerical matrix with two rows (for stereo). The sampling frequency and resolution are saved as attributes:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -1002,8 +1011,8 @@ attr(,"package")
 <p>A recording session can be controlled by three complementary functions: <code>pause()</code>, <code>rewind()</code>, and <code>resume()</code>.</p>
 <p>&nbsp;</p>
 </section>
-<section id="export-sounds-from-r" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="export-sounds-from-r"><span class="header-section-number">1.5</span> Export sounds from R</h2>
+<section id="export-sounds-from-r" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="export-sounds-from-r"><span class="header-section-number">2.9</span> Export sounds from R</h2>
 <p>For maximum compatibility with other sound programs, it may be useful to save a sound as a simple <code>.txt</code> file. The following commands will write a “tico.txt” file:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -1015,8 +1024,8 @@ attr(,"package")
 </div>
 <p>&nbsp;</p>
 </section>
-<section id="format-.wav" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="format-.wav"><span class="header-section-number">1.6</span> Format ‘.wav’</h2>
+<section id="format-.wav" class="level2" data-number="2.10">
+<h2 data-number="2.10" class="anchored" data-anchor-id="format-.wav"><span class="header-section-number">2.10</span> Format ‘.wav’</h2>
 <p><strong>tuneR</strong> and <strong>audio</strong> have a function to write <code>.wav</code> files: <code>writeWave()</code> and <code>save.wave()</code> respectively. Here is an example using <code>writeWave()</code>:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -1034,8 +1043,8 @@ attr(,"package")
 </div>
 <p>&nbsp;</p>
 </section>
-<section id="format-.flac" class="level2" data-number="1.7">
-<h2 data-number="1.7" class="anchored" data-anchor-id="format-.flac"><span class="header-section-number">1.7</span> Format ‘.flac’</h2>
+<section id="format-.flac" class="level2" data-number="2.11">
+<h2 data-number="2.11" class="anchored" data-anchor-id="format-.flac"><span class="header-section-number">2.11</span> Format ‘.flac’</h2>
 <p>Free Lossless Audio Codec (FLAC) is a file format for lossless audio data compression. FLAC reduces bandwidth and storage requirements without sacrificing the integrity of the audio source. Audio sources encoded in FLAC are generally reduced in size from 40 to 50 percent. See the flac website for more details (<a href="http://flac.sourceforge.net">flac.sourceforge.net</a>).</p>
 <p>The <code>.flac</code> format cannot be used as such with R. However, the <code>wav2flac()</code>function allows you to call the FLAC software directly from the console. Therefore, FLAC must be installed on your operating system. If you have a <code>.wav</code> file that you want to compress in <code>.flac</code>, call:</p>
 <div class="cell">
@@ -1092,8 +1101,8 @@ attr(,"package")
 <p>&nbsp;</p>
 <hr>
 </section>
-<section id="references" class="level2" data-number="1.8">
-<h2 data-number="1.8" class="anchored" data-anchor-id="references"><span class="header-section-number">1.8</span> References</h2>
+<section id="references" class="level2" data-number="2.12">
+<h2 data-number="2.12" class="anchored" data-anchor-id="references"><span class="header-section-number">2.12</span> References</h2>
 <ol type="1">
 <li><p>Sueur J, Aubin T, Simonis C. 2008. Equipment review: seewave, a free modular tool for sound analysis and synthesis. Bioacoustics 18(2):213–226.</p></li>
 <li><p>Sueur, J. (2018). Sound Analysis and Synthesis with R.</p></li>
@@ -1102,9 +1111,8 @@ attr(,"package")
 <hr>
 <!-- add packages used, system details and versions  -->
 </section>
-</section>
-<section id="session-information" class="level1 unnumbered unlisted">
-<h1 class="unnumbered unlisted">Session information</h1>
+<section id="session-information" class="level2 unnumbered unlisted">
+<h2 class="unnumbered unlisted anchored" data-anchor-id="session-information">Session information</h2>
 <details>
 <summary>
 Click to see
@@ -1121,7 +1129,7 @@ Click to see
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       America/Costa_Rica
- date     2025-10-07
+ date     2025-10-08
  pandoc   3.1.11 @ /usr/lib/rstudio/resources/app/bin/quarto/bin/tools/x86_64/ (via rmarkdown)
 
 ─ Packages ───────────────────────────────────────────────────────────────────

@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-07">
+<meta name="dcterms.date" content="2025-10-08">
 
 <title>Bioacoustic Data Analysis Using R 2025 - Import annotations into R</title>
 <style>
@@ -241,13 +241,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul class="collapse">
-  <li><a href="#annotation-tables" id="toc-annotation-tables" class="nav-link active" data-scroll-target="#annotation-tables"><span class="header-section-number">0.1</span> Annotation tables</a></li>
-  <li><a href="#raven" id="toc-raven" class="nav-link" data-scroll-target="#raven"><span class="header-section-number">0.2</span> Raven</a></li>
-  <li><a href="#rraven" id="toc-rraven" class="nav-link" data-scroll-target="#rraven"><span class="header-section-number">0.3</span> Rraven</a></li>
-  <li><a href="#import-raven-data" id="toc-import-raven-data" class="nav-link" data-scroll-target="#import-raven-data"><span class="header-section-number">0.4</span> Import Raven data</a></li>
-  <li><a href="#export-r-data-to-raven" id="toc-export-r-data-to-raven" class="nav-link" data-scroll-target="#export-r-data-to-raven"><span class="header-section-number">0.5</span> Export R data to Raven</a></li>
-  <li><a href="#warbler-formats" id="toc-warbler-formats" class="nav-link" data-scroll-target="#warbler-formats"><span class="header-section-number">0.6</span> warbleR formats</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">0.7</span> References</a></li>
+  <li><a href="#annotation-tables" id="toc-annotation-tables" class="nav-link active" data-scroll-target="#annotation-tables"><span class="header-section-number">1</span> Annotation tables</a></li>
+  <li><a href="#raven" id="toc-raven" class="nav-link" data-scroll-target="#raven"><span class="header-section-number">2</span> Raven</a></li>
+  <li><a href="#rraven" id="toc-rraven" class="nav-link" data-scroll-target="#rraven"><span class="header-section-number">3</span> Rraven</a>
+  <ul class="collapse">
+  <li><a href="#import-raven-data" id="toc-import-raven-data" class="nav-link" data-scroll-target="#import-raven-data"><span class="header-section-number">3.1</span> Import Raven data</a></li>
+  <li><a href="#export-r-data-to-raven" id="toc-export-r-data-to-raven" class="nav-link" data-scroll-target="#export-r-data-to-raven"><span class="header-section-number">3.2</span> Export R data to Raven</a></li>
+  </ul></li>
+  <li><a href="#warbler-formats" id="toc-warbler-formats" class="nav-link" data-scroll-target="#warbler-formats"><span class="header-section-number">4</span> warbleR formats</a>
+  <ul class="collapse">
+  <li><a href="#selection-tables" id="toc-selection-tables" class="nav-link" data-scroll-target="#selection-tables"><span class="header-section-number">4.1</span> Selection tables</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">4.2</span> References</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -271,7 +276,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 7, 2025</p>
+      <p class="date">October 8, 2025</p>
     </div>
   </div>
   
@@ -292,8 +297,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 <p>&nbsp;</p>
-<section id="annotation-tables" class="level2" data-number="0.1">
-<h2 data-number="0.1" class="anchored" data-anchor-id="annotation-tables"><span class="header-section-number">0.1</span> Annotation tables</h2>
+<section id="annotation-tables" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Annotation tables</h1>
 <p>An annotation table (or selection table in Raven’s terminology and <strong>warbleR</strong>) is a spreadsheet that contains information about the location (and frequency) of the sounds of interest in one or more sound files. Therefore, the basic annotation table should contain at least 3 columns:</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -308,23 +313,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">sound_file_1.wav</td>
-<td style="text-align: center;">4.86</td>
-<td style="text-align: center;">5.39</td>
+<td style="text-align: center;">1.45</td>
+<td style="text-align: center;">1.92</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">sound_file_1.wav</td>
-<td style="text-align: center;">2.88</td>
-<td style="text-align: center;">3.81</td>
+<td style="text-align: center;">2.86</td>
+<td style="text-align: center;">3.96</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">sound_file_2.wav</td>
-<td style="text-align: center;">2.17</td>
-<td style="text-align: center;">2.19</td>
+<td style="text-align: center;">3.14</td>
+<td style="text-align: center;">3.88</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">sound_file_2.wav</td>
-<td style="text-align: center;">4.39</td>
-<td style="text-align: center;">5.32</td>
+<td style="text-align: center;">1.80</td>
+<td style="text-align: center;">2.13</td>
 </tr>
 </tbody>
 </table>
@@ -349,31 +354,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">sound_file_1.wav</td>
-<td style="text-align: center;">4.86</td>
-<td style="text-align: center;">5.39</td>
-<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">4.10</td>
-<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">8.63</td>
+<td style="text-align: center;">1.45</td>
+<td style="text-align: center;">1.92</td>
+<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">4.21</td>
+<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">8.66</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">sound_file_1.wav</td>
-<td style="text-align: center;">2.88</td>
-<td style="text-align: center;">3.81</td>
-<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">4.82</td>
-<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">9.56</td>
+<td style="text-align: center;">2.86</td>
+<td style="text-align: center;">3.96</td>
+<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">5.48</td>
+<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">8.50</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">sound_file_2.wav</td>
-<td style="text-align: center;">2.17</td>
-<td style="text-align: center;">2.19</td>
-<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">6.91</td>
-<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">8.05</td>
+<td style="text-align: center;">3.14</td>
+<td style="text-align: center;">3.88</td>
+<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">6.03</td>
+<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">8.97</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">sound_file_2.wav</td>
-<td style="text-align: center;">4.39</td>
-<td style="text-align: center;">5.32</td>
-<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">5.12</td>
-<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">10.17</td>
+<td style="text-align: center;">1.80</td>
+<td style="text-align: center;">2.13</td>
+<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">6.05</td>
+<td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">9.02</td>
 </tr>
 </tbody>
 </table>
@@ -400,34 +405,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td style="text-align: center;">sound_file_1.wav</td>
 <td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">1</td>
-<td style="text-align: center;">4.86</td>
-<td style="text-align: center;">5.39</td>
-<td style="text-align: center;">4.10</td>
-<td style="text-align: center;">8.63</td>
+<td style="text-align: center;">1.45</td>
+<td style="text-align: center;">1.92</td>
+<td style="text-align: center;">4.21</td>
+<td style="text-align: center;">8.66</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">sound_file_1.wav</td>
 <td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">2</td>
-<td style="text-align: center;">2.88</td>
-<td style="text-align: center;">3.81</td>
-<td style="text-align: center;">4.82</td>
-<td style="text-align: center;">9.56</td>
+<td style="text-align: center;">2.86</td>
+<td style="text-align: center;">3.96</td>
+<td style="text-align: center;">5.48</td>
+<td style="text-align: center;">8.50</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">sound_file_2.wav</td>
 <td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">1</td>
-<td style="text-align: center;">2.17</td>
-<td style="text-align: center;">2.19</td>
-<td style="text-align: center;">6.91</td>
-<td style="text-align: center;">8.05</td>
+<td style="text-align: center;">3.14</td>
+<td style="text-align: center;">3.88</td>
+<td style="text-align: center;">6.03</td>
+<td style="text-align: center;">8.97</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">sound_file_2.wav</td>
 <td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">2</td>
-<td style="text-align: center;">4.39</td>
-<td style="text-align: center;">5.32</td>
-<td style="text-align: center;">5.12</td>
-<td style="text-align: center;">10.17</td>
+<td style="text-align: center;">1.80</td>
+<td style="text-align: center;">2.13</td>
+<td style="text-align: center;">6.05</td>
+<td style="text-align: center;">9.02</td>
 </tr>
 </tbody>
 </table>
@@ -455,37 +460,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: center;">sound_file_1.wav</td>
 <td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">1</td>
 <td style="text-align: center;">1</td>
-<td style="text-align: center;">4.86</td>
-<td style="text-align: center;">5.39</td>
-<td style="text-align: center;">4.10</td>
-<td style="text-align: center;">8.63</td>
+<td style="text-align: center;">1.45</td>
+<td style="text-align: center;">1.92</td>
+<td style="text-align: center;">4.21</td>
+<td style="text-align: center;">8.66</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">sound_file_1.wav</td>
 <td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">1</td>
 <td style="text-align: center;">2</td>
-<td style="text-align: center;">2.88</td>
-<td style="text-align: center;">3.81</td>
-<td style="text-align: center;">4.82</td>
-<td style="text-align: center;">9.56</td>
+<td style="text-align: center;">2.86</td>
+<td style="text-align: center;">3.96</td>
+<td style="text-align: center;">5.48</td>
+<td style="text-align: center;">8.50</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">sound_file_2.wav</td>
 <td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">1</td>
 <td style="text-align: center;">1</td>
-<td style="text-align: center;">2.17</td>
-<td style="text-align: center;">2.19</td>
-<td style="text-align: center;">6.91</td>
-<td style="text-align: center;">8.05</td>
+<td style="text-align: center;">3.14</td>
+<td style="text-align: center;">3.88</td>
+<td style="text-align: center;">6.03</td>
+<td style="text-align: center;">8.97</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">sound_file_2.wav</td>
 <td style="text-align: center; background-color: rgba(204, 235, 255, 255) !important;">1</td>
 <td style="text-align: center;">2</td>
-<td style="text-align: center;">4.39</td>
-<td style="text-align: center;">5.32</td>
-<td style="text-align: center;">5.12</td>
-<td style="text-align: center;">10.17</td>
+<td style="text-align: center;">1.80</td>
+<td style="text-align: center;">2.13</td>
+<td style="text-align: center;">6.05</td>
+<td style="text-align: center;">9.02</td>
 </tr>
 </tbody>
 </table>
@@ -497,8 +502,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This format, with the same column names as in the previous example, is the one used by the <strong>warbleR</strong> package as a basic data object to work on batches of sounds (“batches”). The mandatory columns are “sound.files”, “selec”, “start”, and “end”. The frequency range columns (“bottom.freq” and “top.freq”) and the channel number (“channel”) are optional.</p>
 <p>Annotation tables can be generated within R, or imported from sound analysis programs (mainly, Raven, Avisoft, Syrinx and Audacity).</p>
 </section>
-<section id="raven" class="level2" data-number="0.2">
-<h2 data-number="0.2" class="anchored" data-anchor-id="raven"><span class="header-section-number">0.2</span> Raven</h2>
+<section id="raven" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Raven</h1>
 <p><a href="https://www.ravensoundsoftware.com/">Raven sound analysis software</a> (<a href="https://www.birds.cornell.edu/home">Cornell Lab of Ornithology</a>) provides very powerful tools for the analysis of sounds (animals). <strong>Raven</strong> allows you to use the cursor to manually define the frequency and time limits of the signals. It is a very flexible and user friendly program. The annotations can be saved in a selection file (selection table) in .txt format:</p>
 <p>&nbsp;</p>
 <p><img src="images/Raven.selec.gif" alt="Raven" width="100%"></p>
@@ -516,19 +521,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="images/Raven.open.sst.gif" alt="Raven" width="100%"></p>
 <p>&nbsp;</p>
 </section>
-<section id="rraven" class="level2" data-number="0.3">
-<h2 data-number="0.3" class="anchored" data-anchor-id="rraven"><span class="header-section-number">0.3</span> Rraven</h2>
+<section id="rraven" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Rraven</h1>
 <p>&nbsp;</p>
 <p>The <strong>Rraven</strong> package is designed to facilitate data exchange between R and <a href="https://www.ravensoundsoftware.com/">Raven sound analysis software</a>. R can simplify the automation of complex analysis routines. In addition, R packages such as <strong>warbleR</strong>, <strong>seewave</strong> and <strong>monitorR</strong> (among others) provide additional methods of analysis, which work as a perfect complement to those found in Raven. Therefore, bridging these applications can greatly expand the bioacoustic toolkit.</p>
 <p>Currently, most Raven analyzes cannot be run in the background from a command terminal. Therefore, most of the <strong>Rraven</strong> functions are designed to simplify the exchange of data between the two programs, and in some cases, export files to Raven for further analysis. This tutorial provides detailed examples for each function in <strong>Rraven</strong>, including both the R code and the additional steps required to fully conduct the analyses. Raven Pro must be installed in order to run some of the code.</p>
 <p>In this link you will find several videos that show in detail the different tools in Raven.</p>
 <p>http://ravensoundsoftware.com/video-tutorials/</p>
 <p>&nbsp;</p>
-</section>
-<section id="import-raven-data" class="level2" data-number="0.4">
-<h2 data-number="0.4" class="anchored" data-anchor-id="import-raven-data"><span class="header-section-number">0.4</span> Import Raven data</h2>
-<section id="imp_raven" class="level3" data-number="0.4.1">
-<h3 data-number="0.4.1" class="anchored" data-anchor-id="imp_raven"><span class="header-section-number">0.4.1</span> <em>imp_raven</em></h3>
+<section id="import-raven-data" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="import-raven-data"><span class="header-section-number">3.1</span> Import Raven data</h2>
+<section id="imp_raven" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="imp_raven"><span class="header-section-number">3.1.1</span> <em>imp_raven</em></h3>
 <p>This function imports Raven selection tables. You can import several files at once. Raven can also import selection tables that include data from multiple recordings. The function returns a single data frame with the information contained in the selection files. We already have 4 Raven selection tables in the example directory:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -704,7 +708,7 @@ ones)</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rvn.dat <span class="ot">&lt;-</span> <span class="fu">imp_raven</span>(<span class="at">all.data =</span> <span class="cn">FALSE</span>, <span class="at">freq.cols =</span> <span class="cn">TRUE</span>, <span class="at">path =</span> <span class="st">"./examples"</span>, <span class="at">warbler.format =</span> <span class="cn">TRUE</span>, <span class="at">all.data =</span> <span class="cn">FALSE</span>)</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rvn.dat <span class="ot">&lt;-</span> <span class="fu">imp_raven</span>(<span class="at">all.data =</span> <span class="cn">FALSE</span>, <span class="at">freq.cols =</span> <span class="cn">TRUE</span>, <span class="at">path =</span> <span class="st">"./examples"</span>, <span class="at">warbler.format =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(rvn.dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -807,8 +811,8 @@ ones)</code></pre>
 <p>&nbsp;</p>
 <p>The output data frame contains the following columns: “sound.files”, “channel”, “selec”, “start”, “end” and “selec.file.” You can also import the frequency range parameters in ‘selection.table’ by setting ‘freq.cols’ tp <code>TRUE</code>. The data frame returned by <code>imp_raven()</code> (when in the <strong>warbleR</strong> format) can be entered into several functions of <strong>warbleR</strong> for a more detailed analysis.</p>
 </section>
-<section id="relabel_colms" class="level3" data-number="0.4.2">
-<h3 data-number="0.4.2" class="anchored" data-anchor-id="relabel_colms"><span class="header-section-number">0.4.2</span> <em>relabel_colms</em></h3>
+<section id="relabel_colms" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="relabel_colms"><span class="header-section-number">3.1.2</span> <em>relabel_colms</em></h3>
 <p>This is a simple function to re-label the columns to match the format of the selection table used in <strong>warbleR</strong>:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -1220,10 +1224,10 @@ ones)</code></pre>
 <p>&nbsp;</p>
 </section>
 </section>
-<section id="export-r-data-to-raven" class="level2" data-number="0.5">
-<h2 data-number="0.5" class="anchored" data-anchor-id="export-r-data-to-raven"><span class="header-section-number">0.5</span> Export R data to Raven</h2>
-<section id="exp_raven" class="level3" data-number="0.5.1">
-<h3 data-number="0.5.1" class="anchored" data-anchor-id="exp_raven"><span class="header-section-number">0.5.1</span> <em>exp_raven</em></h3>
+<section id="export-r-data-to-raven" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="export-r-data-to-raven"><span class="header-section-number">3.2</span> Export R data to Raven</h2>
+<section id="exp_raven" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="exp_raven"><span class="header-section-number">3.2.1</span> <em>exp_raven</em></h3>
 <p><em>exp_raven</em> saves a selection table in ‘.txt’ format that can be opened directly in Raven. No objects are returned to the R environment. The following code exports a selection table from a single sound file:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -1280,10 +1284,11 @@ ones)</code></pre>
 <p>&nbsp;</p>
 </section>
 </section>
-<section id="warbler-formats" class="level2" data-number="0.6">
-<h2 data-number="0.6" class="anchored" data-anchor-id="warbler-formats"><span class="header-section-number">0.6</span> warbleR formats</h2>
-<section id="selection-tables" class="level3" data-number="0.6.1">
-<h3 data-number="0.6.1" class="anchored" data-anchor-id="selection-tables"><span class="header-section-number">0.6.1</span> Selection tables</h3>
+</section>
+<section id="warbler-formats" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> warbleR formats</h1>
+<section id="selection-tables" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="selection-tables"><span class="header-section-number">4.1</span> Selection tables</h2>
 <p>These objects are created with the <code>selection_table()</code> function. The function takes data frames containing selection data (name of the sound file, selection, start, end …), verifies if the information is consistent (see the function <code>check_sels()</code> for details) and saves the ‘diagnostic’ metadata as an attribute. The selection tables are basically data frames in which the information contained has been corroborated so it can be read by other <strong>warbleR</strong> functions. The selection tables must contain (at least) the following columns:</p>
 <ol type="1">
 <li>sound files (sound.files)</li>
@@ -1572,9 +1577,8 @@ ones)</code></pre>
 </div>
 </div>
 <p>&nbsp;</p>
-</section>
-<section id="extended-selection-tables" class="level3" data-number="0.6.2">
-<h3 data-number="0.6.2" class="anchored" data-anchor-id="extended-selection-tables"><span class="header-section-number">0.6.2</span> Extended selection tables</h3>
+<section id="extended-selection-tables" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="extended-selection-tables"><span class="header-section-number">4.1.1</span> Extended selection tables</h3>
 <p>When the <code>extended = TRUE</code> argument the function generates an object of the <em>extended_selection_table</em> class that also contains a list of ‘wave’ objects corresponding to each of the selections in the data. Therefore, the function <strong>transforms the selection table into self-contained objects</strong> since the original sound files are no longer needed to perform most of the acoustic analysis in <strong>warbleR</strong>. This can greatly facilitate the storage and exchange of (bio)acoustic data. In addition, it also speeds up analysis, since it is not necessary to read the sound files every time the data is analyzed.</p>
 <p>Now, as mentioned earlier, you need the <code>selection_table()</code> function to create an extended selection table. You must also set the argument <code>extended = TRUE</code> (otherwise, the class would be a selection table). The following code converts the sample data into an extended selection table:</p>
 <div class="cell">
@@ -1683,13 +1687,14 @@ Wave Object
 <hr>
 </section>
 </section>
-<section id="references" class="level2" data-number="0.7">
-<h2 data-number="0.7" class="anchored" data-anchor-id="references"><span class="header-section-number">0.7</span> References</h2>
+<section id="references" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="references"><span class="header-section-number">4.2</span> References</h2>
 <ul>
 <li>Araya-Salas (2017), <em>Rraven: connecting R and Raven bioacoustic software</em>. R package version 1.0.2.</li>
 </ul>
 <hr>
 <!-- add packages used, system details and versions  -->
+</section>
 </section>
 <section id="session-information" class="level1 unnumbered unlisted">
 <h1 class="unnumbered unlisted">Session information</h1>
@@ -1709,7 +1714,7 @@ Click to see
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       America/Costa_Rica
- date     2025-10-07
+ date     2025-10-08
  pandoc   3.1.11 @ /usr/lib/rstudio/resources/app/bin/quarto/bin/tools/x86_64/ (via rmarkdown)
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────

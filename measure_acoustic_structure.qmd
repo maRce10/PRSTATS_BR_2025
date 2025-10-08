@@ -546,7 +546,13 @@ If `img = TRUE`, the function also produces image files with the spectrograms of
 
 ```{r measure 3, eval = FALSE}
 
-freq_DTW(lbh_selec_table, img = TRUE, col = "red", pch = 21, line = FALSE)
+freq_DTW(
+  lbh_selec_table,
+  img = TRUE,
+  col = "red",
+  pch = 21,
+  line = FALSE
+)
 
 ```
 
@@ -755,7 +761,12 @@ sp <- spectro_analysis(lbh_selec_table[1:8, ], bp = c(1, 11), 300, fast = TRUE)
 sp <- merge(sp, lbh_selec_table[1:8, ], by = c("sound.files", "selec"))
 
 # caculate song-level features for all numeric features
-song_analysis(X = sp, song_colm = "song", parallel = 1, pb = TRUE)
+song_analysis(
+  X = sp,
+  song_colm = "song",
+  parallel = 1,
+  pb = TRUE
+)
 
 
 ```
@@ -792,7 +803,13 @@ Calculate song-level features selecting features with 'mean_colm':
 ```{r, eval = FALSE}
 
 # caculate song-level features selecting features with mean_colm
-song_analysis(X = sp, song_colm = "song",mean_colm = c("dfrange", "duration"), parallel = 1, pb = TRUE)
+song_analysis(
+  X = sp,
+  song_colm = "song",
+  mean_colm = c("dfrange", "duration"),
+  parallel = 1,
+  pb = TRUE
+)
 
 ```
 
@@ -817,9 +834,16 @@ Calculate song-level features for selecting features with 'mean_colm', 'max_colm
 
 ```{r, eval = FALSE}
 
-song_analysis(X = sp, weight = "duration", song_colm = "song",
-mean_colm =  c("dfrange", "duration"), min_colm =  "mindom", max_colm = "maxdom", 
-  parallel = 1, pb = TRUE)
+song_analysis(
+  X = sp,
+  weight = "duration",
+  song_colm = "song",
+  mean_colm =  c("dfrange", "duration"),
+  min_colm =  "mindom",
+  max_colm = "maxdom",
+  parallel = 1,
+  pb = TRUE
+)
 
 
 ```

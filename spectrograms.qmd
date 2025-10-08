@@ -36,7 +36,7 @@ data(orni)
 
 ```
 
-## Fourier transform
+# Fourier transform
 
 In order to understand the information contained in a spectrogram it is necessary to understand, at least briefly, the [Fourier transform](https://en.wikipedia.org/wiki/Fourier_transform). In simple words, this is a mathematical transformation that detects the periodicity in time series, identifying the different frequencies that compose them and their relative energy. Therefore it is said that it transforms the signals from the time domain to the frequency domain.
 
@@ -134,7 +134,7 @@ par(opar)
 
  
 
-## From the Fourier transform to the spectrogram
+# From the Fourier transform to the spectrogram
 
 The spectrograms are constructed of the spectral decomposition of discrete time segments of amplitude values. Each segment (or window) of time is a column of spectral density values in a frequency range. Take for example this simple modulated sound, which goes up and down in frequency:
 
@@ -467,7 +467,7 @@ plot(res$res.t, res$res.f, type =  "l", col = "blue", lwd = 4, xlab = "Time wind
 
  
 
-## Creating spectrograms in R
+# Creating spectrograms in R
 
 There are several R packages with functions that produce spectrograms in the graphical device. This chart (taken from Sueur 2018) summarizes the functions and their arguments: <img src="images/r-spectrogram-funs.png" alt="Spectrogram functions" width="700"/>
 

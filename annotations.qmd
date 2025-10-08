@@ -14,7 +14,7 @@ title: <font size="7"><b>Import annotations into R</b></font>
 
  
 
-## Annotation tables
+# Annotation tables
 
 An annotation table (or selection table in Raven's terminology and **warbleR**) is a spreadsheet that contains information about the location (and frequency) of the sounds of interest in one or more sound files. Therefore, the basic annotation table should contain at least 3 columns:
 
@@ -98,7 +98,7 @@ This format, with the same column names as in the previous example, is the one u
 
 Annotation tables can be generated within R, or imported from sound analysis programs (mainly, Raven, Avisoft, Syrinx and Audacity).
 
-## Raven
+# Raven
 
 [Raven sound analysis software](https://www.ravensoundsoftware.com/) ([Cornell Lab of Ornithology](https://www.birds.cornell.edu/home)) provides very powerful tools for the analysis of sounds (animals). **Raven** allows you to use the cursor to manually define the frequency and time limits of the signals. It is a very flexible and user friendly program. The annotations can be saved in a selection file (selection table) in .txt format:
 
@@ -132,7 +132,7 @@ These selections open easily in Raven, as long as the sound files are kept in th
 
  
 
-## Rraven
+# Rraven
 
  
 
@@ -201,7 +201,7 @@ Raven selections can also be imported in 'selection.table' format so that you ca
 
 ```{r, eval=FALSE}
 
-rvn.dat <- imp_raven(all.data = FALSE, freq.cols = TRUE, path = "./examples", warbler.format = TRUE, all.data = FALSE)
+rvn.dat <- imp_raven(all.data = FALSE, freq.cols = TRUE, path = "./examples", warbler.format = TRUE)
 
 head(rvn.dat)
 
@@ -353,9 +353,9 @@ These types of tables can be opened as a multi-file display in Raven:
 
  
 
-## warbleR formats
+# warbleR formats
 
-### Selection tables
+## Selection tables
 
 These objects are created with the `selection_table()` function. The function takes data frames containing selection data (name of the sound file, selection, start, end ...), verifies if the information is consistent (see the function `check_sels()` for details) and saves the 'diagnostic' metadata as an attribute. The selection tables are basically data frames in which the information contained has been corroborated so it can be read by other **warbleR** functions. The selection tables must contain (at least) the following columns:
 

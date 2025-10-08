@@ -26,6 +26,8 @@ opts_chunk$set(tidy = TRUE, warning = FALSE, message = FALSE)
 
  
 
+# Sound as a physical phenomenon
+
 Sound waves are characterized by compression and expansion of the medium as sound energy moves through it. There is also back and forth motion of the particles making up the medium:
 
 <img src="images/wave_white_bg.gif" alt="wave animation" width="700"/>
@@ -117,7 +119,7 @@ par(opar)
  
 
 ::: {.alert .alert-success}
-<font size="6"><b>Digitizing sound</b></font>
+# Digitizing sound
 
  
 
@@ -413,7 +415,7 @@ At this point quantization involves very little information loss. 16 bits is pro
 
  
 
-# Sound in R
+## Sound in R
 
 Sound waves can be represented by 3 kinds of R objects:
 
@@ -940,7 +942,7 @@ plot(down_wav@left)
 
 <!-- add packages used, system details and versions  -->
 
-# Session information {.unnumbered .unlisted}
+## Session information {.unnumbered .unlisted}
 
 <details>
   <summary>Click to see</summary>

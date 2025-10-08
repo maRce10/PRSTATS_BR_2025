@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-07">
+<meta name="dcterms.date" content="2025-10-08">
 
 <title>Bioacoustic Data Analysis Using R 2025 - Building spectrograms</title>
 <style>
@@ -239,13 +239,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul class="collapse">
-  <li><a href="#fourier-transform" id="toc-fourier-transform" class="nav-link active" data-scroll-target="#fourier-transform"><span class="header-section-number">0.1</span> Fourier transform</a></li>
-  <li><a href="#from-the-fourier-transform-to-the-spectrogram" id="toc-from-the-fourier-transform-to-the-spectrogram" class="nav-link" data-scroll-target="#from-the-fourier-transform-to-the-spectrogram"><span class="header-section-number">0.2</span> From the Fourier transform to the spectrogram</a></li>
-  <li><a href="#overlap" id="toc-overlap" class="nav-link" data-scroll-target="#overlap"><span class="header-section-number">0.3</span> Overlap</a></li>
-  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations"><span class="header-section-number">0.4</span> Limitations</a></li>
-  <li><a href="#creating-spectrograms-in-r" id="toc-creating-spectrograms-in-r" class="nav-link" data-scroll-target="#creating-spectrograms-in-r"><span class="header-section-number">0.5</span> Creating spectrograms in R</a></li>
-  <li><a href="#dynamic-spectrograms" id="toc-dynamic-spectrograms" class="nav-link" data-scroll-target="#dynamic-spectrograms"><span class="header-section-number">0.6</span> Dynamic spectrograms</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">0.7</span> References</a></li>
+  <li><a href="#fourier-transform" id="toc-fourier-transform" class="nav-link active" data-scroll-target="#fourier-transform"><span class="header-section-number">1</span> Fourier transform</a></li>
+  <li><a href="#from-the-fourier-transform-to-the-spectrogram" id="toc-from-the-fourier-transform-to-the-spectrogram" class="nav-link" data-scroll-target="#from-the-fourier-transform-to-the-spectrogram"><span class="header-section-number">2</span> From the Fourier transform to the spectrogram</a>
+  <ul class="collapse">
+  <li><a href="#overlap" id="toc-overlap" class="nav-link" data-scroll-target="#overlap"><span class="header-section-number">2.1</span> Overlap</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations"><span class="header-section-number">2.2</span> Limitations</a></li>
+  </ul></li>
+  <li><a href="#creating-spectrograms-in-r" id="toc-creating-spectrograms-in-r" class="nav-link" data-scroll-target="#creating-spectrograms-in-r"><span class="header-section-number">3</span> Creating spectrograms in R</a>
+  <ul class="collapse">
+  <li><a href="#dynamic-spectrograms" id="toc-dynamic-spectrograms" class="nav-link" data-scroll-target="#dynamic-spectrograms"><span class="header-section-number">3.1</span> Dynamic spectrograms</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">3.2</span> References</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -269,7 +273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 7, 2025</p>
+      <p class="date">October 8, 2025</p>
     </div>
   </div>
   
@@ -303,8 +307,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(orni)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="fourier-transform" class="level2" data-number="0.1">
-<h2 data-number="0.1" class="anchored" data-anchor-id="fourier-transform"><span class="header-section-number">0.1</span> Fourier transform</h2>
+<section id="fourier-transform" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Fourier transform</h1>
 <p>In order to understand the information contained in a spectrogram it is necessary to understand, at least briefly, the <a href="https://en.wikipedia.org/wiki/Fourier_transform">Fourier transform</a>. In simple words, this is a mathematical transformation that detects the periodicity in time series, identifying the different frequencies that compose them and their relative energy. Therefore it is said that it transforms the signals from the time domain to the frequency domain.</p>
 <p>To better understand how it works, we can simulate time series composed of pre-defined frequencies. In this example we simulate 3 frequencies and join them in a single time series:</p>
 <div class="cell">
@@ -435,8 +439,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>&nbsp;</p>
 </section>
-<section id="from-the-fourier-transform-to-the-spectrogram" class="level2" data-number="0.2">
-<h2 data-number="0.2" class="anchored" data-anchor-id="from-the-fourier-transform-to-the-spectrogram"><span class="header-section-number">0.2</span> From the Fourier transform to the spectrogram</h2>
+<section id="from-the-fourier-transform-to-the-spectrogram" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> From the Fourier transform to the spectrogram</h1>
 <p>The spectrograms are constructed of the spectral decomposition of discrete time segments of amplitude values. Each segment (or window) of time is a column of spectral density values in a frequency range. Take for example this simple modulated sound, which goes up and down in frequency:</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -451,9 +455,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>If we divide the sound into 10 segments and make periodograms for each of them we can see this pattern in the frequencies:</p>
 <p><img src="images/periodogram_spectro.gif" alt="Spectrogram resolution" width="600"></p>
 <p>This animation shows in a very simple way the logic behind the spectrograms: if we calculate Fourier transforms for short segments of time through a sound (e.g.&nbsp;amplitude changes in time) and concatenate them, we can visualize the variation in frequencies over time. &nbsp;</p>
-</section>
-<section id="overlap" class="level2" data-number="0.3">
-<h2 data-number="0.3" class="anchored" data-anchor-id="overlap"><span class="header-section-number">0.3</span> Overlap</h2>
+<section id="overlap" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="overlap"><span class="header-section-number">2.1</span> Overlap</h2>
 <p>When frequency spectra are combined to produce a spectrogram, the frequency and amplitude modulations are not gradual:</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -522,8 +525,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>It is necessary to take this cost into account when producing spectrograms of long sound files (&gt; 1 min).</p>
 <p>&nbsp;</p>
 </section>
-<section id="limitations" class="level2" data-number="0.4">
-<h2 data-number="0.4" class="anchored" data-anchor-id="limitations"><span class="header-section-number">0.4</span> Limitations</h2>
+<section id="limitations" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="limitations"><span class="header-section-number">2.2</span> Limitations</h2>
 <p>However, there is a trade-off between the resolution between the 2 domains: the higher the frequency resolution, the lower the resolution in time. The following animation shows, for the sound of the previous example, how the resolution in frequency decreases as the resolution in time increases:</p>
 <p><img src="images/spectro.precision.tradeoff2.gif" alt="Spectrogram resolution 2"></p>
 <p>&nbsp;</p>
@@ -540,8 +543,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 </section>
-<section id="creating-spectrograms-in-r" class="level2" data-number="0.5">
-<h2 data-number="0.5" class="anchored" data-anchor-id="creating-spectrograms-in-r"><span class="header-section-number">0.5</span> Creating spectrograms in R</h2>
+</section>
+<section id="creating-spectrograms-in-r" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Creating spectrograms in R</h1>
 <p>There are several R packages with functions that produce spectrograms in the graphical device. This chart (taken from Sueur 2018) summarizes the functions and their arguments: <img src="images/r-spectrogram-funs.png" alt="Spectrogram functions" width="700"></p>
 <p>&nbsp;</p>
 <p>We will focus on making spectrograms using the <code>spectro ()</code> function of <strong>seewave</strong>:</p>
@@ -668,9 +672,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </div>
 <p>&nbsp;</p>
-</section>
-<section id="dynamic-spectrograms" class="level2" data-number="0.6">
-<h2 data-number="0.6" class="anchored" data-anchor-id="dynamic-spectrograms"><span class="header-section-number">0.6</span> Dynamic spectrograms</h2>
+<section id="dynamic-spectrograms" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="dynamic-spectrograms"><span class="header-section-number">3.1</span> Dynamic spectrograms</h2>
 <p>The package <a href="https://marce10.github.io/dynaSpec">dynaSpec</a> allows to create static and dynamic visualizations of sounds, ready for publication or presentation. These dynamic spectrograms are produced natively with base graphics, and are save as an .mp4 video in the working directory:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -691,8 +694,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>&nbsp;</p>
 <hr>
 </section>
-<section id="references" class="level2" data-number="0.7">
-<h2 data-number="0.7" class="anchored" data-anchor-id="references"><span class="header-section-number">0.7</span> References</h2>
+<section id="references" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="references"><span class="header-section-number">3.2</span> References</h2>
 <ol type="1">
 <li><p>Araya-Salas, Marcelo and Wilkins, Matthew R. (2020), dynaSpec: dynamic spectrogram visualizations in R. R package version 1.0.0.</p></li>
 <li><p>Sueur J, Aubin T, Simonis C. 2008. Equipment review: seewave, a free modular tool for sound analysis and synthesis. Bioacoustics 18(2):213–226.</p></li>
@@ -700,6 +703,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <hr>
 <!-- add packages used, system details and versions  -->
+</section>
 </section>
 <section id="session-information" class="level1 unnumbered unlisted">
 <h1 class="unnumbered unlisted">Session information</h1>
@@ -719,7 +723,7 @@ Click to see
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       America/Costa_Rica
- date     2025-10-07
+ date     2025-10-08
  pandoc   3.1.11 @ /usr/lib/rstudio/resources/app/bin/quarto/bin/tools/x86_64/ (via rmarkdown)
 
 ─ Packages ───────────────────────────────────────────────────────────────────
