@@ -24,7 +24,7 @@ The [warbleR](https://cran.r-project.org/package=warbleR) package is intended to
 
  
 
-<img src="images/loop_warbleR_optim.gif" alt="warbleR measuring loop" width="500"/>
+<img src="images/loop_warbleR_optim.gif" alt="warbleR measuring loop" width="90%"/>
 
  
 
@@ -32,7 +32,7 @@ The [warbleR](https://cran.r-project.org/package=warbleR) package is intended to
 
  
 
-<img src="images/loop_warbleR_images_optim.gif" alt="warbleR image loop" width="500"/>
+<img src="images/loop_warbleR_images_optim.gif" alt="warbleR image loop" width="90%"/>
 
  
 
@@ -641,7 +641,7 @@ df4 <- df4[c(5, 8, 18, 29, 34, 35, 37, 38, 39, 55, 56, 26, 1, 19, 40, 46, 4, 11,
 
 ```
 
-<img src="images/analysis-workflow.png" alt="analysis workflow"/>
+<img src="images/analysis-workflow.png" alt="analysis workflow" width="100%"/>
 
  
 

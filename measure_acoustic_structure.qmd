@@ -515,7 +515,7 @@ ggplot(xcor_mds,
 
 In time series analysis, time dynamics distortion (DTW) is one of the algorithms to measure the similarity between two time sequences, which may vary in their 'speed'. The sequences are nonlinearly 'warped' in the temporal dimension to determine a measure of their similarity independent of certain nonlinear variations in the temporal dimension.
 
-<img src="images/dtw.jpg" alt="viewSpec" width="640"/>
+<img src="images/dtw.jpg" alt="viewSpec" width="80%"/>
 
 
 The `freq_DTW()` function extracts the dominant frequency values as a time series and then calculates the acoustic dissimilarity using dynamic time warping. The function uses the `approx()` function to interpolate values between the dominant frequency measurements:
