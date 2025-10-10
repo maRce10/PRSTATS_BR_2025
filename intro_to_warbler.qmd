@@ -51,13 +51,13 @@ The package offers functions for:
 
 Most functions allow the parallelization of tasks, which distributes the tasks among several cores to improve computational efficiency. Tools to evaluate the performance of the analysis at each step are also available. All these tools are provided in a standardized workflow for the analysis of the signal structure, making them accessible to a wide range of users, including those without much knowledge of R.
 
-**warbleR** is a young package (officially published in 2017) currently in a maturation stage:
+**warbleR** is a package (officially published in 2017) currently in a maturation stage:
 
 <img src="images/lifecycle.jpeg" alt="life cycle" width="80%"/>
 
  
 
-## Selection tables
+# Selection tables
 
 These objects are created with the `selection_table()` function. The function takes data frames containing selection data (name of the sound file, selection, start, end ...), verifies if the information is consistent (see the function `check_sels()` for details) and saves the 'diagnostic' metadata as an attribute. The selection tables are basically data frames in which the information contained has been corroborated so it can be read by other **warbleR** functions. The selection tables must contain (at least) the following columns:
 
@@ -131,7 +131,7 @@ class(st)
 
  
 
-### Extended selection tables
+## Extended selection tables
 
 When the `extended = TRUE` argument the function generates an object of the *extended_selection_table* class that also contains a list of 'wave' objects corresponding to each of the selections in the data. Therefore, the function **transforms the selection table into self-contained objects** since the original sound files are no longer needed to perform most of the acoustic analysis in **warbleR**. This can greatly facilitate the storage and exchange of (bio)acoustic data. In addition, it also speeds up analysis, since it is not necessary to read the sound files every time the data is analyzed.
 
@@ -174,7 +174,7 @@ And that is. Now the acoustic data and the selection data (as well as the additi
 
  
 
-### Handling extended selection tables
+## Handling extended selection tables
 
 Several functions can be used to deal with objects of this class. You can test if the object belongs to the *extended_selection_table*:
 
@@ -334,7 +334,7 @@ This works as long as some of the original sound files are retained and no other
 
 & nbsp;
 
-### Selection table size
+## Selection table size
 
 The size of the extended selection box will depend on the number of selections, the sampling rate, the duration of the selection and the length of margins (i.e. additional time you want to keep on each side of the selection). In this example, a selection table with 1000 selections is created simply by repeating the sample data frame several times and then is converted to an extended selection table:
 
@@ -381,11 +381,11 @@ As you can see, the object size is only \~ 31 MB. Then, as a guide, a selection 
 
  
 
-### Analysis using extended selection tables
+## Analysis using extended selection tables
 
 These objects can be used as input for most **warbleR** functions. Here are some examples of **warbleR** functions using *extended_selection_table*:
 
-#### Spectral parameters
+### Spectral features
 
 ```{r extn_sel_12.1, eval=TRUE}
 
@@ -397,7 +397,7 @@ sp
 
  
 
-#### Signal-to-noise ratio
+### Signal-to-noise ratio
 
 ```{r extn_sel_12.5, eval=TRUE}
 
@@ -408,7 +408,7 @@ snr
 
  
 
-#### Dynamic time warping (DTW)
+### Dynamic time warping (DTW)
 
 ```{r extn_sel_12.7, eval=FALSE}
 
@@ -453,7 +453,7 @@ The function runs much faster in the extended selection tables. Performance gain
 
  
 
-### Create selections 'by song'
+## Create selections 'by song'
 
 The extended selection above were made by element. That is, each sound file within the object contains a single selection (that is, a 1: 1 correspondence between the selections and the 'wave' objects). However, extended selection tables can also be created using a higher hierarchical level with the argument `by.song`. In this case, "song" represents a higher level that contains one or more selections and that the user may want to keep together for a particular analysis (for example, the duration of the intervals). The `by.song` argument takes the name of the column of characters or factors with the IDs of the different" songs "within a sound file (note that the function assumes that a given song can only be found in only one sound file, so the selections with the same song ID, but from different sound files are taken as different 'songs').
 
@@ -521,7 +521,7 @@ bs_snr
 
  
 
-### Sharing acoustic data
+## Sharing acoustic data
 
 This new object class allows to share complete data sets, including acoustic data. For example, the following code downloads a subset of the data used in [Araya-Salas *et al* (2019)](https://marce10.github.io/uploads/araya-salas-2019-a.pdf) (can also be downloaded from  [Araya-Salas *et al* (2017)](https://github.com/maRce10/PRSTATS_BR_2025/raw/master/data/extended.selection.table.araya-salas.et.al.2017.bioacoustics.100.sels.rds):
 

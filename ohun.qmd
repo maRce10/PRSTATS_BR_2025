@@ -485,12 +485,15 @@ Amplitude modulation (variation in amplitude across a sound event) can be proble
 
 ```{r, eval = TRUE, warning=FALSE, message=FALSE}
 
+set.seed(123)
+freqs <- sample(c(3, 6), 10, replace = TRUE)
+
 #Creating simulated song
 set.seed(12)
 
 #Creating vector for duration
 durs <- rep(c(0.3, 1), 5)
-
+  
 sim_2 <-
   simulate_songs(
     n = 10,
@@ -794,13 +797,6 @@ correlations <-
 # run detection
 detection <-
   template_detector(template.correlations = correlations, threshold = 0.5)
-
-correlations <-
-  template_correlator(
-    templates = lbh_reference[c(1, 10),],
-    files = c("lbh1.wav", "lbh2.wav"),
-    path = tempdir()
-  )
 
 ```
 
